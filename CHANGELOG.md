@@ -11,6 +11,12 @@ Rules the reference project kept in its own process file, brought into the playb
 - Reopening an issue in a closed milestone reopens the milestone (Lifecycle, rule 12).
 - A train re-runs when `main` moved under it in overlapping files (Working in parallel).
 
+## 2.1 (merges in the Saturday window)
+
+- `main` is the only process. Projects follow it as it stands: no version pin, no "Differences from the playbook" section, no project file that wins over it. The PROCESS.md template holds only project facts and engineering rules.
+- Changes merge on Saturday from 11:00 America/Chicago, except an emergency the owner declares (`emergency` label plus an `Emergency:` line quoting them). The `merge-window` workflow enforces it as a required status.
+- Retro picks land here, not in the project's PROCESS.md.
+
 ## 2.0 (2026-10-31)
 
 - Rebranded as the **TBTWD Playbook**, repository renamed from `ProcessDocumentation` to `tbtwd-playbook`.

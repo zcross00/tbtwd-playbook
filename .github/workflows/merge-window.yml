@@ -1,0 +1,42 @@
+# Changes to the playbook merge only on Saturday from 11:00 America/Chicago,
+# except in an emergency (CONTRIBUTING.md, "When changes merge").
+# Sets the "merge-window" commit status on every open PR; make it a required
+# status check on main. The scheduled runs flip it at the window's edges:
+# 11:00 Saturday and 00:00 Sunday Chicago time, both offsets for daylight time.
+name: merge-window
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, labeled, unlabeled, ready_for_review]
+  schedule:
+    - cron: "0 16 * * 6"  # Sat 11:00 CDT
+    - cron: "0 17 * * 6"  # Sat 11:00 CST
+    - cron: "0 5 * * 0"   # Sun 00:00 CDT
+    - cron: "0 6 * * 0"   # Sun 00:00 CST
+    - cron: "0 */6 * * *" # backstop
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: write
+concurrency:
+  group: merge-window
+  cancel-in-progress: false
+jobs:
+  merge-window:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+      - name: Test
+        run: cd .github/scripts && python3 -m unittest test_merge_window -q
+      - name: Set status
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -n "$PR" ]; then
+            python3 .github/scripts/merge_window.py pr "$PR"
+          else
+            python3 .github/scripts/merge_window.py all
+          fi

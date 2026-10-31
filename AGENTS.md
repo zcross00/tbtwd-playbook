@@ -1,6 +1,6 @@
 # Agent instructions: TBTWD Playbook
 
-Read this before any non-trivial task on a project that follows the TBTWD Playbook. The project's own `docs/PROCESS.md` (made from [templates/PROCESS.md](templates/PROCESS.md)) names its roles, labels, CI tier and owner; where it differs from this playbook, the project wins for that project, and the difference is written down, not resolved silently.
+Read this before any non-trivial task on a project that follows the TBTWD Playbook. The project's own `docs/PROCESS.md` (made from [templates/PROCESS.md](templates/PROCESS.md)) names its roles, labels, CI tier and owner. The process itself is this playbook's `main` branch and nothing else: a project file, an open PR or a message doesn't override it. If the project's file seems to disagree, the playbook wins and the file gets fixed.
 
 ---
 
@@ -38,4 +38,4 @@ Read this before any non-trivial task on a project that follows the TBTWD Playbo
 - Skip, disable or quarantine a test to get green.
 - Rewrite another thread's branch or `main`.
 - Loosen another area's check without saying so in the PR body and filing its `deferred gate` issue.
-- Change this playbook outside a PR.
+- Change this playbook outside a PR, or merge a change outside the Saturday window without the owner's declared emergency ([CONTRIBUTING.md](CONTRIBUTING.md)).

@@ -4,7 +4,7 @@ How to run a software project where one owner sets direction and a team of AI ag
 
 This playbook was extracted from a live project: a single-player game built end to end by parallel Claude threads, with one person setting direction, one laptop running CI, and more than a thousand issues and PRs through the same rules. It is written to be reused as-is on the next project, and adapted on purpose (not by drift) for a larger one, such as an enterprise application with human teams.
 
-**Version 2.0.** The baseline is frozen. Changes come as PRs ([CONTRIBUTING.md](CONTRIBUTING.md)), normally out of a weekly retro.
+**Version 2.1.** The baseline is frozen, and `main` is the process: projects follow it as it stands, with no overrides of their own. Changes come as PRs ([CONTRIBUTING.md](CONTRIBUTING.md)), normally out of a weekly retro, and merge on Saturday at 11:00 America/Chicago unless the owner declares an emergency.
 
 ---
 
@@ -14,7 +14,7 @@ This playbook was extracted from a live project: a single-player game built end 
 2. **Breadth first.** Build every system broad and rough, park details, and stop after two attempts at the same detail.
 3. **A closed issue means done.** A merge closes nothing. A separate verifier closes work after checking it against what merged.
 4. **Gates are explicit and owned.** Every check that blocks a merge has an owner, and every loosened gate leaves a tracking issue behind.
-5. **The process changes only through its own loop.** A weekly retro proposes changes, the owner approves them, and they land here as PRs.
+5. **The process changes only through its own loop.** A weekly retro proposes changes, the owner approves them, and they land here as PRs on Saturday.
 
 ---
 
