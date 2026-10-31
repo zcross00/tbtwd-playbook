@@ -1,0 +1,30 @@
+name: Deferred gate
+description: A check, target or floor that was loosened, reported instead of gated, or deferred.
+labels: ["deferred gate"]
+body:
+  - type: input
+    id: pr
+    attributes:
+      label: PR
+      description: The PR that changed it.
+    validations:
+      required: true
+  - type: textarea
+    id: changed
+    attributes:
+      label: What changed
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The measurement (mean, spread, margin, CI time).
+    validations:
+      required: true
+  - type: textarea
+    id: restore
+    attributes:
+      label: What would restore it
+    validations:
+      required: true

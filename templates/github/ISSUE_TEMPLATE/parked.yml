@@ -1,0 +1,16 @@
+name: Rough edge or idea
+description: Parked until a milestone boundary. Not worked on now.
+labels: ["parked"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: What's wrong or what the idea is. The owner's words quoted if they raised it.
+    validations:
+      required: true
+  - type: input
+    id: priority
+    attributes:
+      label: Priority it serves
+      description: A, B or C

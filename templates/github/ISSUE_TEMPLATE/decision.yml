@@ -1,0 +1,23 @@
+name: Decision
+description: One question for the owner. Filed in the same turn it is asked.
+title: "<the question>?"
+labels: ["decision"]
+body:
+  - type: textarea
+    id: options
+    attributes:
+      label: Options
+      description: Two to four, each with what happens if chosen. Mark the recommended one.
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+    validations:
+      required: true
+  - type: textarea
+    id: answer
+    attributes:
+      label: Answer
+      description: Left empty until answered. Then the owner's exact words as a quote, with date and link.

@@ -1,0 +1,32 @@
+# TBTWD Playbook PR lint. Copy to .github/workflows/ with
+# scripts/playbook_lint.py, and make "playbook-lint" a required check.
+# Runs on a light runner: change runs-on to [self-hosted, light] on Tier 0/1.
+name: playbook-lint
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  playbook-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Collect body, commits and changed files
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          printf '%s' "$BODY" > "$RUNNER_TEMP/body.txt"
+          git log --format=%B "$BASE..$HEAD" > "$RUNNER_TEMP/commits.txt"
+          if git diff --name-only "$BASE...$HEAD" | grep -vqE '(^docs/|\.md$)'; then
+            echo "DOCS_ONLY=false" >> "$GITHUB_ENV"
+          else
+            echo "DOCS_ONLY=true" >> "$GITHUB_ENV"
+          fi
+      - name: Lint
+        run: python3 .github/scripts/playbook_lint.py "$RUNNER_TEMP/body.txt" "$RUNNER_TEMP/commits.txt" "$DOCS_ONLY"
