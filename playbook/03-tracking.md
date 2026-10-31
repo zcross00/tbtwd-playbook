@@ -9,6 +9,7 @@ Status lives in the issue tracker (GitHub issues plus a Projects board on the re
 - **One issue per piece of work:** each planned piece, each owed acceptance test, each spec approval, each rough edge, each idea.
 - **Labels** give its area (`area: …`), its priority (`priority: A`, `B`, `C`), and `parked` for rough edges and ideas that aren't planned yet. Other standing labels: `decision`, `deferred gate`, `verification` (a correction), `main-fix`, `train`.
 - **New rough edges and ideas are new issues**, labelled `parked`, never rows in a file. Updates are comments on the issue.
+- **A new system gets a spec before its code.** One or two pages: what it does, the data it holds, how it meets other systems, how it will be tested, and what's out of scope. It merges through Code review like code. Its open choices go to the owner with a recommendation, and the thread builds on the recommendation meanwhile ([Roles](02-roles.md)). *Why:* this is where "that's not what I meant" is caught cheaply, before anything is built on the wrong reading.
 - **Every issue links its spec**, when it has one. Specs, the process and the decision log stay in the repo, since they change with the code.
 
 ---
@@ -20,6 +21,7 @@ Status lives in the issue tracker (GitHub issues plus a Projects board on the re
 - **Its description** holds the goal, the spec link, the done-when, its dates line, and ends with the acceptance test: setup, what to try, what passes ([templates/milestone.md](../templates/milestone.md)).
 - **A milestone closes only on the owner's acceptance pass.** Every issue verified isn't enough on its own. The owner may pass without playing; that is their call. The acceptance build is prepared ahead of time, so the owner never waits on a build or CI.
 - **Acceptance fails only where the team didn't build what was asked.** New opinions formed by seeing the result become new issues outside the milestone, each quoting the owner's words. A fail files a priority A correction in the same milestone for each thing that failed.
+- **The owner's acceptance feedback is kept word for word**, as a transcript in the repo, and every issue it produces links it. *Why:* on the reference project the owner asked, during a playtest, "I want to capture all of this verbatim. And I want to make sure this gets tied to issues, and the issues are aware of the actual context and ask in which I have made".
 
 *Why:* a milestone exists so the owner can use the result; each issue passing its own check doesn't prove the whole works.
 
@@ -34,7 +36,7 @@ An issue joins a milestone only once it's groomed and the coordinator approves. 
 3. a size of one PR, L or smaller ([Estimating](08-estimating.md)), or else it's split;
 4. every unknown filed as its own time-boxed investigation issue, giving the question, a capped estimate, and an answer as a comment plus any issues it turns up.
 
-The thread comments `groomed: approved (coordinator)` and sets the milestone. A change to a milestone's scope or date after its thread has started goes to the owner. Verification corrections skip approval and join the original issue's milestone straight away.
+The thread comments `groomed: approved (coordinator)` and sets the milestone. Work that turns out bigger than its estimate mid-build stops and is split and re-planned, rather than pushed through. A change to a milestone's scope or date after its thread has started goes to the owner. Verification corrections skip approval and join the original issue's milestone straight away.
 
 *Why:* without a scope lock, milestones grow until they never close.
 

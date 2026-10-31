@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2 (merges in the Saturday window)
+
+Rules the reference project kept in its own process file, brought into the playbook:
+
+- A new system gets a spec before its code (Tracking work).
+- Acceptance feedback is kept as a verbatim transcript that its issues link (Tracking work).
+- Work that turns out bigger mid-build is split and re-planned (Tracking work).
+- A PR with no issue opens one first, unless docs-only (Lifecycle, rule 1).
+- Reopening an issue in a closed milestone reopens the milestone (Lifecycle, rule 12).
+- A train re-runs when `main` moved under it in overlapping files (Working in parallel).
+
 ## 2.1 (merges in the Saturday window)
 
 - `main` is the only process. Projects follow it as it stands: no version pin, no "Differences from the playbook" section, no project file that wins over it. The PROCESS.md template holds only project facts and engineering rules.

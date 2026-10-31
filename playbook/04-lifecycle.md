@@ -21,7 +21,7 @@ A closed issue means the work is done, and the board is only worth reading if th
 
 ## Before merge: the PR
 
-1. **PRs never close issues.** A PR names each issue as `Refs #N`, on its own line. It never writes `close(s|d)`, `fix(es|ed)` or `resolve(s|d)` directly before `#N`, in the body or a commit message. To mention one, write "the fix in #N". *Why:* closing keywords moved cards to Done with nobody checking, and a stray "fix #N" closed an issue nothing had touched. The `playbook-lint` workflow enforces this ([templates/github/](../templates/github/)).
+1. **PRs never close issues.** A PR names each issue as `Refs #N`, on its own line. It never writes `close(s|d)`, `fix(es|ed)` or `resolve(s|d)` directly before `#N`, in the body or a commit message. To mention one, write "the fix in #N". A PR with no issue opens one first; only a docs-only PR may have none. *Why:* closing keywords moved cards to Done with nobody checking, and a stray "fix #N" closed an issue nothing had touched. The `playbook-lint` workflow enforces this ([templates/github/](../templates/github/)).
 2. **Every ask has a line of evidence.** Under each `Refs #N`, one line per ask in the issue, including its Check line, naming what proves it: a test by name, a check and its gate, a measurement, a screenshot path. An ask not finished says "not in this PR". An ask the owner changed links where they did. *Why:* a PR summary says what was built, not what was asked.
 3. **Attestations are tied to their issue.** A capability or acceptance file says `Owner:` (the area) and `Covers: #N, #M`, not a milestone name or a sentence.
 4. **A loosened or deferred gate gets a tracking issue.** A PR that loosens, reports instead of gates, or defers any check or target files an issue labelled `deferred gate`: what changed, why, and what would restore it. It links it from the PR and related issues. Code review decides gate changes without the owner ([Roles](02-roles.md)). *Why:* a gate loosened in a PR body is forgotten once the PR merges.
@@ -41,7 +41,7 @@ A closed issue means the work is done, and the board is only worth reading if th
    - any loosened gate has its `deferred gate` issue.
 10. **Pass:** one comment with a checked line per ask, close as completed, `board: status=Done`. If a stated ask was split off unbuilt, the parent stays open and the split-off becomes its priority A correction. If only a check was loosened, the parent passes and the `deferred gate` issue tracks the rest.
 11. **Fail:** the issue stays open (or reopens) at `In progress`, with a comment saying which asks failed. Each fix is a new issue labelled `verification`, priority A, in the same milestone, linked to the original and the PR. *Why:* a violation means the board was wrong, which is the most expensive kind of wrong, so its correction goes first.
-12. **Nothing else closes work.** An issue is closed only by Verification, or as not planned / duplicate with a comment saying why. Anyone who finds a closed issue with an ask still open reopens it.
+12. **Nothing else closes work.** An issue is closed only by Verification, or as not planned / duplicate with a comment saying why. Anyone who finds a closed issue with an ask still open reopens it. Reopening an issue in a closed milestone reopens the milestone too.
 
 ---
 

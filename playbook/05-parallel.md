@@ -49,6 +49,7 @@ Every code PR merges in a train, a train of one included.
 - **Green:** merge the train with a merge commit; every member shows as merged; each gets its board lines.
 - **Red:** nothing merges and the train closes. If the log names the failing member, it goes back to its thread and the rest ride the next train. If not, split the train in two.
 - **A member never changes while it rides.** A push to a member takes it off the train.
+- **If `main` moved during the run**, the tree that lands isn't quite the tree that was tested. Code review checks what merged meanwhile, and re-runs the train when any of it touches the same files or a check a member leans on.
 - One train is open at a time.
 
 *Why:* with one full run every ~25 minutes, separate runs per PR plus a combined run cost six runs for five merges. A train spends one run on all of them, and the tree that lands is the tree that was tested.
