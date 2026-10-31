@@ -47,6 +47,12 @@ DEFAULTS = {
         # milestone has a day of its own history.
         "planned_rate": 150,
     },
+    # A PR's paperwork (board/paperwork.py): the comment that marks an
+    # issue groomed, the labels that skip grooming, and the label of the
+    # issue a loosened gate must name.
+    "paperwork": {"groomed": "groomed: approved",
+                  "exempt_labels": ["verification", "deferred gate"],
+                  "deferred_label": "deferred gate"},
     "forecast": {"days": 3, "min_signal": 100, "unestimated": 60, "playtest_days": 1,
                  "closed_lookback": 14},
     "wiki": {

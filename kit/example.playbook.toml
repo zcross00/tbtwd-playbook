@@ -41,6 +41,13 @@ nightly_workflow = "ci.yml"
 # a day of its own history.
 planned_rate = 150
 
+[paperwork]
+# The comment that marks an issue groomed, the labels that skip grooming, and
+# the label of the issue a PR that loosens a gate must name.
+groomed = "groomed: approved"
+exempt_labels = ["verification", "deferred gate"]
+deferred_label = "deferred gate"
+
 [forecast]
 days = 3
 min_signal = 100
