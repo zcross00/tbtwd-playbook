@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Daily re-forecast of the open milestones' due dates (retro pick 9).
 
-Zac agreed to the retro's ten picks on 2026-10-30 ("on the pick list, i agree
-with all 10"). Pick 9: re-forecast daily from the last 3 days' measured pace,
+Re-forecast daily from the last 3 days' measured pace,
 not the planned 150k a thread, and have each closed milestone report its
 forecast against its actual close. Of the 16 milestones closed by 10-31, all
 closed before their 10-25 or 10-30 90% date (median 9 days) and 13 before
@@ -24,8 +23,8 @@ With --apply, an active milestone's due date becomes its forecast, and the
 forecast line goes on top of its description, replacing only a line this tool
 wrote earlier. A milestone closed in the last 14 days
 whose due date isn't its close date gets a "Closed" line comparing the two,
-then its due date set to the close date (Zac, 2026-10-30: closed = close
-date).
+then its due date set to the close date (a closed milestone's due date is
+its close date).
 
 Reads and writes through `gh api` where it's installed, else GH_TOKEN.
 Without --apply it only prints what it would change.
@@ -93,7 +92,7 @@ def forecast(left_k, rate, today):
 
 
 # The line this tool writes; only such a line is ever replaced, so a thread's
-# own lines (the groomings' "Forecast dates (...)", which can quote Zac) stay.
+# own lines (the groomings' "Forecast dates (...)", which can quote the owner) stay.
 OWN_LINE = re.compile(r"^Forecast \(\d{4}-\d{2}-\d{2}, (?:kit|tools)/board/forecast\.py\)")
 
 

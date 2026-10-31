@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Weekly usage pace (Zac, 2026-10-25): +7% every 12 h from the reset, 91% by the
+"""Weekly usage pace: +7% every 12 h from the reset, 91% by the
 last 12 h, 9% kept in reserve. Reads USAGE_SNAPSHOTS (default ./snapshots.csv:
 taken, cost_usd, zac_reading_pct as the owner's reading).
 

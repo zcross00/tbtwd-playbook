@@ -7,7 +7,7 @@ Usage, from the project's checkout (it reads .playbook.toml there):
 REVIEW_STAMPS names the JSON file of last review dates (default
 ./last-reviewed.json); keep it outside the repo, so a review fires no workflow.
 
-Picks, in this order (retro pick 8, Zac 2026-10-30 23:26Z):
+Picks, in this order:
   1. up to 50 non-parked open issues, least recently reviewed first (last-reviewed.json, then updated_at);
   2. every issue whose newest board status is In review for more than 24 hours;
   3. every open decision issue (label `decision` or wiki.needs_owner_label);

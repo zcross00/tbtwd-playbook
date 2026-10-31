@@ -10,8 +10,8 @@
 # When the API can't be read, the event's word stands.
 #
 # A train is a PR whose body has a line starting "Train:", or one labelled
-# `train` (playbook/05-parallel.md, merge trains). Only a train runs `full` on the PC (retro pick 3, Zac
-# 2026-10-30 23:26Z); outside a PR (the nightly run, a manual run) train=true,
+# `train` (playbook/05-parallel.md, merge trains). Only a train runs `full` on the full
+# runner; outside a PR (the nightly run, a manual run) train=true,
 # since those check main. When the API can't be read, train=false: the PR
 # waits for its next run rather than taking the PC unasked.
 set -eo pipefail

@@ -111,7 +111,7 @@ class FiftyPercent(unittest.TestCase):
         self.assertIn("ON TRACK, BEHIND ITS 50% DATE", out)
 
     def test_a_passed_playtest_waits_on_merge_instead(self):
-        ms = dict(self.MS, description=self.MS["description"] + "\nSigned off: 2026-10-28, Zac's pass.")
+        ms = dict(self.MS, description=self.MS["description"] + "\nSigned off: 2026-10-28, the owner's pass.")
         out = m.line(ms, [issue(1)], {1: [{"body": "board: estimate=10"}]}, [], None, dt.date(2026, 11, 5))
         self.assertIn("PLAYTEST PASSED, WAITING ON MERGE", out)
         self.assertNotIn("PAST ITS 50% DATE", out)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Weekly usage attribution report (Zac, 2026-10-31 15:05Z, cmsg_01MBd7bh7crCqMYZ8YdP7oShPMnh9uzyb5vHgj9ci2MTq2:
-"every reset, 1 hour before, i want to collect a report of our usage, and try to attribute what parts of the
-project consumed resources ... for now i just want to consistently capture the information").
+"""Weekly usage attribution report: an hour before each usage reset, what the week used and which parts
+of the project used it, captured the same way every week (playbook/09-cadences.md).
 
 Input: weekly/costs-YYYY-MM-DD.json, each session's cost_usd from get_session, with `prev` = its cost at the
 previous 23:20 per-session snapshot, plus its area. Output: weekly/report-YYYY-MM-DD.md.

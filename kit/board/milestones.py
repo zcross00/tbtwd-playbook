@@ -174,9 +174,8 @@ def parts(ms, issues, comments, prs, runs, today):
             parts.append(f"{green_streak(runs, last)} green nights" if runs is not None
                          else "no nightly run yet (#414)")
     parts.append("NOT DATED" if d90 is None else "AT RISK" if at_risk(left, rate, today, d90) else "ON TRACK")
-    # The due date is the 90% date, so it mustn't become slack (Zac, 2026-10-30
-    # 00:11: "just want to make sure we're not giving ourselves too much time
-    # if it's not efficient"): an open milestone is held to its 50% date too.
+    # The due date is the 90% date, so it mustn't become slack: an open
+    # milestone is held to its 50% date too.
     if open_ and d50 is not None:
         if SIGNED_OFF.search(desc):
             parts.append("PLAYTEST PASSED, WAITING ON MERGE")

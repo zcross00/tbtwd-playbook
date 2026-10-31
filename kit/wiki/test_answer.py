@@ -5,7 +5,7 @@ import answer
 import gen
 
 
-def event(body="1", login="zcross00", state="open", labels=("decision",), app=None):
+def event(body="1", login="example-owner", state="open", labels=("decision",), app=None):
     return {"issue": {"state": state, "labels": [{"name": l} for l in labels], "body": "**Question:** x?"},
             "comment": {"body": body, "user": {"login": login}, "performed_via_github_app": app, "created_at": "2026-10-30T21:36:32Z",
                         "html_url": "https://github.com/c/1"}}
@@ -14,7 +14,7 @@ def event(body="1", login="zcross00", state="open", labels=("decision",), app=No
 class Answer(unittest.TestCase):
     def test_his_comment_is_quoted_dated_and_kept_above_the_question(self):
         body = answer.answer(event("B, but\n\nlater"))
-        self.assertTrue(body.startswith("Decided: 2026-10-30\n\n> B, but\n>\n> later\n\nZac, 2026-10-30 21:36 UTC"))
+        self.assertTrue(body.startswith("Decided: 2026-10-30\n\n> B, but\n>\n> later\n\nSam, 2026-10-30 21:36 UTC"))
         self.assertTrue(body.endswith("**Question:** x?"))
         # The wiki shows the first quoted line as his words.
         self.assertEqual(gen.quote(body), "B, but")

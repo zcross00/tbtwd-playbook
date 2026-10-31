@@ -43,8 +43,7 @@ since cancels itself there and frees the PC.
 
 No run waits for ever (#636). One that has waited AGE_SECS since it joined
 counts as priority A, and priority A runs go oldest first, so a fresh A run
-only overtakes runs younger than AGE_SECS. Zac, 2026-10-24: runs without A
-mustn't starve behind a stream of A runs, and A runs mustn't stall either
+only overtakes runs younger than AGE_SECS. Runs without A mustn't starve behind a stream of A runs, and A runs mustn't stall either
 (#511, priority A, took 20 hours from ready to merged). Nothing is ever
 cancelled.
 
@@ -69,9 +68,9 @@ other run, sorting by main's, waited for #659. Nothing ran for half an hour.
 The PR's run with exactly OVERFLOW_AHEAD runs ahead of it goes to one of
 GitHub's Windows machines instead (#1124), when no other run is there, main
 isn't red, its push is OVERFLOW_SETTLED_SECS old, and the month's hosted spend
-leaves room under OVERFLOW_UNDER (Zac,
-2026-10-29: "where ever we can farm out builds to github that would ease
-bottlenecks, let's start doing it", "46 a month"). A hosted full run takes
+leaves room under OVERFLOW_UNDER (the owner's monthly hosted budget, in
+.playbook.toml): hosted machines take load off the PC where they ease a
+bottleneck. A hosted full run takes
 110 to 140 minutes against the PC's 40 to 55 (#1103, #1124), so it only beats
 a wait of two runs or more. ci.yml marks such a run with a `hosted-full` artifact, which is
 how every waiting run, and kit/churn/minutes.py, tell it's not on the PC and
@@ -588,7 +587,7 @@ def wait(poll, sleep=None, cancel=None):
     poll CONFIRM_SECS later, and so is "hosted", which sets the step output
     where=hosted (#1124); ten API errors in a row let the run go at once, to the PC.
     A run told to stop cancels itself, so it shows grey rather than a red X
-    that reads as broken CI (#1007; Zac saw #990's and asked to fix CI). If
+    that reads as broken CI (#1007). If
     the cancel fails or hasn't landed after CANCEL_SECS, the run fails."""
     sleep = sleep or time.sleep
     errors, last, confirming = 0, None, False
