@@ -54,7 +54,7 @@ At the same time, the retro reviews the process, the owner included ("all proces
 1. Read the week: the usage report, red nights, verification fails, queue incidents, threads that stalled, questions the owner was asked (and whether they should have been).
 2. Propose a **ranked pick list** of changes, each with the problem, the evidence, and the change.
 3. The owner approves picks (all, some, none) in one reply.
-4. Approved picks land as PRs to the project's PROCESS.md, and, if they're general, to this playbook.
+4. Approved picks land as PRs to this playbook, and merge on the following Saturday at 11:00 America/Chicago ([CONTRIBUTING.md](../CONTRIBUTING.md)). A pick that only changes a project fact (a path, a time, a budget) goes to the project's PROCESS.md.
 5. Record the week's results (picks, approvals with the owner's words).
 
 Outside the retro, the process changes only when something is blocked.
