@@ -8,7 +8,10 @@ sessions' summed cost_usd (get_session's usage), scaled by dollars per 1% from
 two of the owner's readings. Until there are two readings, a default scale is used
 and the line says so.
 
-    python3 pace.py [--reset 2026-10-24T16:00Z]
+    python3 pace.py [--reset 2026-10-24T16:00Z] [--scale 33.4]
+
+--scale gives the dollars per 1% (last week's), for when the readings can't:
+a reading from before a reset can't set a scale across it.
 """
 import csv, os, sys, datetime as dt, pathlib
 
@@ -22,7 +25,13 @@ def main():
     rows = list(csv.DictReader(open(pathlib.Path(os.environ.get("USAGE_SNAPSHOTS") or "snapshots.csv"))))
     readings = [r for r in rows if r["zac_reading_pct"]]
     a = readings[0]
-    if len(readings) >= 2:
+    if "--scale" in sys.argv:
+        # A reading from before the reset can't set a scale across it (0% at
+        # the reset row): pass last week's $ per 1% instead.
+        per_pct = float(sys.argv[sys.argv.index("--scale") + 1])
+        a = readings[-1]
+        how = f"${per_pct:.1f} per 1%, given"
+    elif len(readings) >= 2:
         b = readings[-1]
         per_pct = (float(b["project_cost_usd"]) - float(a["project_cost_usd"])) / (float(b["zac_reading_pct"]) - float(a["zac_reading_pct"]))
         a = b
