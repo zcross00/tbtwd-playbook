@@ -38,9 +38,19 @@ CFG = playbook_config.load()
 REPO = "/".join(playbook_config.owner_repo(CFG))
 API = os.environ.get("GITHUB_API_URL", "https://api.github.com")
 PAPER = CFG["paperwork"]
-CLOSING = re.compile(r"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\b[:\s]+#\d+", re.I)
+# templates/github/scripts/playbook_lint.py's: a closing word before #N, an
+# owner/repo#N, or an issue URL closes it on merge.
+CLOSING = re.compile(
+    r"\b(close[sd]?|fix(e[sd])?|resolve[sd]?)\b[\s:]*"
+    r"((\w[\w.-]*/[\w.-]+)?#\d+|https://github\.com/\S+/issues/\d+)", re.I)
+# What a body says when it loosens a gate, or the PR template's Gates box
+# ticked. Naming the label alone ("a `deferred gate` issue") isn't one.
 LOOSENS = re.compile(r"\b(loosen(s|ed|ing)?|report-only|reports? instead of gat|defers? (the|a|its) "
-                     r"(gate|check)|deferred gate)", re.I)
+                     r"(gate|check))|^\s*[-*]\s*\[[xX]\]\s*gate changed", re.I | re.M)
+# Lines that say nothing was loosened: the template's unticked boxes and its
+# "No gate loosened" line, ticked or not.
+UNSAID = re.compile(r"^\s*[-*]\s*\[ \].*$|^\s*[-*]\s*(\[[xX]\]\s*)?no gates? (was |were )?loosened.*$",
+                    re.I | re.M)
 GROOMED = re.compile(re.escape(PAPER["groomed"]), re.I)
 EXEMPT = set(PAPER["exempt_labels"])
 DEFERRED = PAPER["deferred_label"]
@@ -76,7 +86,8 @@ def problems(pr, files, issue_of, comments_of):
             out.append(f"#{n}: no milestone")
         if not labels(issue) & EXEMPT and not any(GROOMED.search(c) for c in comments_of(n)):
             out.append(f"#{n}: no `{PAPER['groomed']}` comment (playbook/03-tracking.md)")
-    if LOOSENS.search(pr.get("body") or ""):
+    said = UNSAID.sub("", re.sub(r"<!--.*?-->", "", pr.get("body") or "", flags=re.S))
+    if LOOSENS.search(said):
         named = set(nums) | {int(n) for n in re.findall(r"#(\d+)", pr.get("body") or "")}
         named.discard(pr["number"])
         if not any(DEFERRED in labels(issue_of(n) or {}) for n in named):

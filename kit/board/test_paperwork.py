@@ -1,7 +1,12 @@
 """Tests for paperwork.py's PR paperwork check: kit/test.sh"""
 import unittest
 
+import os
+
 import paperwork as p
+
+TEMPLATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "templates", "github",
+                        "pull_request_template.md")
 
 ISSUES = {
     1: {"number": 1, "milestone": {"number": 13}, "labels": []},
@@ -51,6 +56,25 @@ class Paperwork(unittest.TestCase):
         self.assertEqual(check("Refs #1\nLoosens the f2 floor to 20%."),
                          ["loosens or defers a gate but names no `deferred gate` issue (playbook/07-gates.md)"])
         self.assertEqual(check("Refs #1\nLoosens the f2 floor to 20%, tracked in #4."), [])
+
+    def test_the_pr_templates_gates_section_is_not_a_loosening(self):
+        gates = ("## Gates\n\n- [ ] No gate loosened or deferred\n"
+                 "- [ ] Gate changed: `deferred gate` issue #…\n")
+        self.assertEqual(check("Refs #1\n\n" + gates), [])
+        self.assertEqual(check("Refs #1\n\n" + gates.replace("- [ ] No", "- [x] No")), [])
+        # Ticking "Gate changed" with no deferred-gate issue is flagged; with one, it isn't.
+        ticked = gates.replace("- [ ] Gate", "- [x] Gate")
+        self.assertEqual(len(check("Refs #1\n\n" + ticked)), 1)
+        self.assertEqual(check("Refs #1\n\n" + ticked.replace("#…", "#4")), [])
+
+    def test_the_whole_pr_template_filled_in_is_ok(self):
+        with open(TEMPLATE, encoding="utf-8") as f:
+            body = f.read().replace("Refs #N", "Refs #1")
+        self.assertEqual(check(body), [])
+
+    def test_closing_an_issue_in_another_repo_or_by_url_is_flagged(self):
+        self.assertEqual(len(check("Refs #1\nFixes acme/game#3.")), 1)
+        self.assertEqual(len(check("Refs #1\nCloses https://github.com/acme/game/issues/3")), 1)
 
     def test_drafts_and_trains_are_skipped(self):
         self.assertEqual(check("fixes #2", draft=True), [])
