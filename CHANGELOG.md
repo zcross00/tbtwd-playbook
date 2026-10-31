@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- New `kit/board/paperwork.py` and the reusable `kit-paperwork` workflow: a check on each PR for the paperwork the reviewer read by hand (a closing word, a `Refs #N` line on a code PR, each ref'd issue in a milestone and groomed, a `deferred gate` issue for a loosened gate). Settings under `[paperwork]` in `.playbook.toml`.
+
 ## 2.3 (2026-10-31, initial setup; the owner waived the Saturday window)
 
 - New `kit/`: the process tooling moved here from the reference project, so the project keeps only one `.playbook.toml` and thin workflows. Board sync, milestone burn-down and forecast, PR milestones, the generated wiki and decision answers, the CI queue, newer-run check and merge trains, the CI gate scripts, hosted-minutes and churn reports, conflict replay, release notes, the daily backlog scan and the weekly usage report.

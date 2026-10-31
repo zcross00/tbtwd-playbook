@@ -1,0 +1,52 @@
+name: kit-paperwork
+
+# Checks one PR's paperwork (kit/board/paperwork.py): no closing word, a
+# `Refs #N` line on a code PR, each ref'd issue in a milestone and groomed,
+# and a `deferred gate` issue for a loosened gate. Goes red on a problem and
+# lists them in the log. The caller (pull_request_target, so the playbook's
+# main copy runs, never the PR's) needs `issues: read` and
+# `pull-requests: read`, and should skip PRs from forks.
+on:
+  workflow_call:
+    inputs:
+      pr:
+        description: The PR number to check
+        type: number
+        required: true
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+
+jobs:
+  paperwork:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: board/paperwork.py ${{ inputs.pr }}
+        env:
+          GH_TOKEN: ${{ github.token }}

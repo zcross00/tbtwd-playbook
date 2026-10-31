@@ -14,6 +14,7 @@ Extracted from the reference project, where each tool was built for a failure it
 | | `milestones.py` | The daily burn-down of the open milestones, for the morning report |
 | | `forecast.py` | Re-forecasts each open milestone's due date from its measured pace; closed milestones get a forecast-against-close line |
 | | `pr_milestone.py` | Gives each open PR the milestone of the issues it refs |
+| | `paperwork.py` | Checks a PR's paperwork: no closing word, a `Refs #N` line on a code PR, each ref'd issue in a milestone and groomed, a `deferred gate` issue for a loosened gate |
 | `wiki/` | `gen.py`, `publish.sh` | Generates every wiki page from GitHub (status, milestones, roadmap, decisions, hand pages) and pushes them. `gen.py --check` is a daily backlog review step |
 | | `answer.py` | The owner answers a `decision` issue by commenting on it; the comment is quoted in and the issue closes |
 | `queue/` | `pc_queue.py` | Orders CI runs waiting for one full runner: `main-fix`, then priority A, then oldest; trains carry their members; overflow to a hosted machine within budget ([CI tiers](../playbook/06-ci.md)) |
@@ -60,6 +61,7 @@ Every script runs from the project's checkout. `run.sh` runs one (`kit/run.sh bo
    | `kit-board.yml` | `board/sync.py` (secret `BOARD_TOKEN`: a classic PAT with `project` scope) |
    | `kit-forecast.yml` | `board/forecast.py` |
    | `kit-pr-milestone.yml` | `board/pr_milestone.py` |
+   | `kit-paperwork.yml` | `board/paperwork.py` on one PR (input `pr`); red on a problem |
    | `kit-wiki.yml` | `wiki/publish.sh` (`paths`: the project files the pages read) |
    | `kit-decision-answer.yml` | `wiki/answer.py`, then the wiki |
    | `kit-release-notes.yml` | `releases/release_notes.py` |
