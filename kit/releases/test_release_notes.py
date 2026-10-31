@@ -27,7 +27,7 @@ class Plan(unittest.TestCase):
         [(r, name, body)] = plan([rel("m15-playtest-1", "27")])
         self.assertIn("[15. Milestone 15](https://x/milestone/15) (open)", body)
         self.assertIn("#150, #151", body)
-        self.assertIn("[aaaaaaa](https://github.com/zcross00/sovereign-space/commit/" + "a" * 40 + ")", body)
+        self.assertIn("[aaaaaaa](https://github.com/example-owner/example-game/commit/" + "a" * 40 + ")", body)
         self.assertIn("This is the build to play.", body)
         self.assertTrue(body.endswith("Notes."))
         self.assertEqual(name, "m15-playtest-1")
@@ -41,11 +41,11 @@ class Plan(unittest.TestCase):
 
     def test_a_closed_milestone_says_its_playtest_passed(self):
         [(_, _, body)] = plan([rel("m19-playtest-1", "28")], {19: "closed"})
-        self.assertIn("The milestone is closed: Zac's playtest passed.", body)
+        self.assertIn("The milestone is closed: Sam's playtest passed.", body)
 
     def test_an_old_tag_belongs_to_its_milestone(self):
-        out = {r["tag_name"]: body for r, _, body in plan([rel("s6-playtest-1", "27"), rel("m12-playtest-2", "28")])}
-        self.assertIn("Superseded by [m12-playtest-2]", out["s6-playtest-1"])
+        out = {r["tag_name"]: body for r, _, body in plan([rel("early-playtest-1", "27"), rel("m12-playtest-2", "28")])}
+        self.assertIn("Superseded by [m12-playtest-2]", out["early-playtest-1"])
 
     def test_other_releases_are_left_alone(self):
         self.assertEqual(plan([rel("v1.0", "27")]), [])
@@ -68,7 +68,7 @@ class Plan(unittest.TestCase):
 # Milestone 22's description: curly quotes (byte 0x9d isn't cp1252) and an arrow.
 QUOTED = {"number": 22, "title": "Playtests that record themselves \u2192 timeline", "state": "closed",
           "html_url": "https://x/milestone/22",
-          "description": "Zac: \u201ca \u201cplaytest\u201d mode\u201d \u2192 a packaged output"}
+          "description": "Sam: \u201ca \u201cplaytest\u201d mode\u201d \u2192 a packaged output"}
 
 
 class Unicode(unittest.TestCase):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Give each open PR the milestone of the issues it refs (Zac, 2026-10-30:
-"why do we have so many PR's not linked to a milestone?").
+"""Give each open PR the milestone of the issues it refs, so the PR list and
+the board show which milestone each PR serves.
 
 PROCESS keeps milestones on issues, and a PR names its issues on `Refs #N`
 lines, so a PR never got a milestone unless its thread set one by hand: on

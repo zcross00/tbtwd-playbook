@@ -40,9 +40,9 @@ class Pace(unittest.TestCase):
 class OpenMilestones(unittest.TestCase):
     ISSUES = [issue(1, "closed", "2026-10-30T09:00:00Z"), issue(2), issue(3)]
 
-    # m13's grooming line, which quotes Zac (10-31).
+    # m13's grooming line, which quotes the owner.
     GROOMING = ('Forecast dates (2026-10-30): 50% Nov 1, 90% Nov 3. Due Nov 3, was Nov 8 '
-                '(Zac: "keep it at nov 8", cmsg_x).\nGoal: x.')
+                '(Sam: "keep it at nov 8", cmsg_x).\nGoal: x.')
 
     def test_forecast_moves_the_due_date_and_writes_its_line_on_top(self):
         d, desc, report = f.plan_open(ms(self.GROOMING), self.ISSUES, {1: 300, 2: 150, 3: 60}, NOW, TODAY)
@@ -51,7 +51,7 @@ class OpenMilestones(unittest.TestCase):
         self.assertTrue(desc.startswith("Forecast (2026-10-31, kit/board/forecast.py): due Nov 4 "
                                         "(50% Nov 4, 90% Nov 4: one date, from measured pace). "
                                         "210k left at 100k a day"))
-        # A thread's own line, with Zac's words, is kept below.
+        # A thread's own line, with the owner's words, is kept below.
         self.assertTrue(desc.endswith("\n\n" + self.GROOMING))
         self.assertIn("was 2026-11-03", report)
 
@@ -98,7 +98,7 @@ class OpenMilestones(unittest.TestCase):
 
 class ClosedMilestones(unittest.TestCase):
     def test_reports_forecast_against_close_and_sets_due_to_close(self):
-        # Closed 00:02 UTC on Oct 31 is Oct 30 on Zac's clock.
+        # Closed 00:02 UTC on Oct 31 is Oct 30 on the owner's clock.
         d, desc, report = f.plan_closed(ms(closed_at="2026-10-31T00:02:00Z"), TODAY)
         self.assertEqual(d, dt.date(2026, 10, 30))
         self.assertTrue(desc.endswith("\n\nClosed 2026-10-30, 4 days early: its last due date was Nov 3."))

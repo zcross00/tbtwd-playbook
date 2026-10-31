@@ -13,11 +13,11 @@ never from a workflow. It exits 1 when any day in the window is over the
 limit (--limit, default 500: about four hosted full runs), so a session can
 watch it.
 
-Since 2026-10-29 hosted minutes are paid for, out of a monthly budget (Zac:
-"46 a month"; Pro's included minutes were already spent). Dollars are counted
+Hosted minutes are paid for out of a monthly budget (hosted.budget in
+.playbook.toml), once the plan's included minutes are spent. Dollars are counted
 at the rates in RATE, per minute and rounded up per job as GitHub bills. Past
 WARN of the budget it warns and exits 1; past STOP it says to start no new
-hosted work (dev-process/hosted-actions-plan.md). It also exits 1 when
+hosted work. It also exits 1 when
 the latest board sync failed, and counts today's failed syncs: on 2026-10-23
 every sync failed for 8 hours and nothing said so (#560). And it exits 1 when
 the latest sync skipped a board: line the board can't take, naming each.

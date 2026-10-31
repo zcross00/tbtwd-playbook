@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Writes the project wiki's pages from GitHub (Zac, 2026-10-30 18:11: "I
-want github to just be where I get up to speed on everything").
+"""Writes the project wiki's pages from GitHub, so the owner gets up to speed
+in one place and the chat is left for ad hoc requests.
 
 Every page is generated, so none can drift: Status and the milestone pages
 from the open milestones and their issues (the same burn-down as
@@ -247,8 +247,7 @@ def shot(item, width=300):
 
 
 def home_page(rows, decisions, needs_owner, open_ms, prs, open_prs, gallery, today):
-    """Status at a glance (Zac, 2026-10-30 22:15: "would want home to be overall status at a
-    glance")."""
+    """Status at a glance: what needs the owner, then the milestones."""
     pending = [d for d in decisions if d["state"] == "open"]
     owed = [r for r in rows if r["playtest_owed"]]
     asks = len(pending) + len(owed) + len(needs_owner)
@@ -314,7 +313,7 @@ def sidebar(open_ms):
 
 def vision_page(path=None):
     """The vision in brief: its pitch and its priorities' headings, linking the file for the rest
-    (Zac, 2026-10-30 22:15: "i don't understand why we're copying things like vision wholesale")."""
+    rather than copying it wholesale."""
     path = path or CFG["vision"]
     with open(os.path.join(ROOT, path), encoding="utf-8") as f:
         text = f.read()

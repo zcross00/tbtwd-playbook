@@ -6,9 +6,8 @@
     python3 kit/releases/release_notes.py --delete m14-playtest-1
                                   # remove a release that isn't a playtest, and its tag
 
-Zac, 2026-10-29 22:26: "looking at the github releases, they're not linked to
-milestones or issues at all, just a text blurb and maybe an artifact. can we
-maybe clean all of that up?"
+A release with only a text blurb doesn't say which milestone or issues it
+plays, or whether it's still the build to play.
 
 Each release whose tag matches releases.tag_pattern (default m<N>-playtest-<k>,
 the first group the milestone) gets a

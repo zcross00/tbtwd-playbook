@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Hours the PC's self-hosted runners spent on jobs, per day and per runner label, from the Actions API.
-Part of the weekly usage report (Zac 2026-10-31 15:19Z: "i'd want a complete picture of ALL resource usage").
+Part of the weekly usage report, which covers every resource, the self-hosted runners included.
 Lists runs one day at a time (GitHub's run listing stops at 1,000), then each run's jobs.
 Usage: python3 pc_hours.py 2026-10-25 2026-10-31   (inclusive, UTC days)"""
 import datetime as dt, json, os, subprocess, sys, collections

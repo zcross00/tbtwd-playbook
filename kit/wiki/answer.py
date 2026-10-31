@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Records the owner's answer to a decision from his comment on its issue (Zac,
-2026-10-30 22:08: "how am i meant to answer them now? do i comment on the
-issue?"). Run by the kit-decision-answer workflow on a new comment.
+"""Records the owner's answer to a decision from their comment on its issue,
+so answering is one comment where the question is. Run by the
+kit-decision-answer workflow on a new comment.
 
 On an open issue labeled `decision`, a comment by the owner themselves (project.owner_login) (not a
 Claude session posting as him) is his answer:
