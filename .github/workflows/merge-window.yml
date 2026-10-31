@@ -22,7 +22,11 @@ concurrency:
   group: merge-window
   cancel-in-progress: false
 jobs:
-  merge-window:
+  # Not named merge-window: a check run with that name would satisfy the
+  # required "merge-window" check whatever the window says. Only the commit
+  # status this job sets may carry that name.
+  set-status:
+    name: set merge-window status
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
