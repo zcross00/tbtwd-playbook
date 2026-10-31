@@ -1,60 +1,54 @@
-# ProcessDocumentation
+# TBTWD Playbook
 
-This repository is the **source of truth** for coding standards, documentation style, process workflows, and document templates across all projects. It applies to every repository in this development environment.
+How to run a software project where one owner sets direction and a team of AI agents (or people, or both) does the building, without the process falling apart as it grows.
 
-Both human developers and AI coding agents should consult this repository before starting work on any project.
+This playbook was extracted from a live project: a single-player game built end to end by parallel Claude threads, with one person setting direction, one laptop running CI, and more than a thousand issues and PRs through the same rules. It is written to be reused as-is on the next project, and adapted on purpose (not by drift) for a larger one, such as an enterprise application with human teams.
+
+**Version 2.0.** The baseline is frozen. Changes come as PRs ([CONTRIBUTING.md](CONTRIBUTING.md)), normally out of a weekly retro.
 
 ---
 
-## What's Here
+## The idea in five lines
+
+1. **The owner's attention is the scarcest resource.** Everything else is built to protect it: the owner decides direction and accepts the result; nobody asks them to merge, review statistics, or babysit.
+2. **Breadth first.** Build every system broad and rough, park details, and stop after two attempts at the same detail.
+3. **A closed issue means done.** A merge closes nothing. A separate verifier closes work after checking it against what merged.
+4. **Gates are explicit and owned.** Every check that blocks a merge has an owner, and every loosened gate leaves a tracking issue behind.
+5. **The process changes only through its own loop.** A weekly retro proposes changes, the owner approves them, and they land here as PRs.
+
+---
+
+## Read in this order
+
+| # | Page | What it answers |
+|---|------|-----------------|
+| 1 | [Principles](playbook/01-principles.md) | Why the rules exist; the few that matter most |
+| 2 | [Roles](playbook/02-roles.md) | Who does what: owner, coordinator, work threads, Code review, Verification, Dev process |
+| 3 | [Tracking work](playbook/03-tracking.md) | Issues, milestones, grooming, decisions, the board |
+| 4 | [Lifecycle and definition of done](playbook/04-lifecycle.md) | The stages from idea to verified Done, and the rule behind each gate |
+| 5 | [Working in parallel](playbook/05-parallel.md) | Branches, one PR per thread, shared files, merge trains |
+| 6 | [CI tiers](playbook/06-ci.md) | From one laptop runner to enterprise CI, and when to move up |
+| 7 | [Tests and gates](playbook/07-gates.md) | Deterministic tests, statistical gates, deferred gates |
+| 8 | [Estimating and forecasting](playbook/08-estimating.md) | Sizes, units, honest due dates |
+| 9 | [Cadences](playbook/09-cadences.md) | Daily review, morning report, nightly main, weekly usage report and retro |
+| 10 | [Adopting the playbook](playbook/10-adopting.md) | Day-one setup, the enforcement kit, scaling to an enterprise |
+
+Agents start at [AGENTS.md](AGENTS.md).
+
+---
+
+## What else is here
 
 | Directory | Purpose |
 |-----------|---------|
-| [`standards/`](standards/) | Coding conventions and language-specific rules |
-| [`process/`](process/) | Workflow processes: roles, git workflow |
-| [`templates/`](templates/) | Reusable document templates for projects |
-| [`style/`](style/) | Writing and formatting rules for all documentation |
+| [`templates/`](templates/) | Issue, milestone, decision and project-process templates, plus the design-artifact templates |
+| [`templates/github/`](templates/github/) | Drop-in GitHub files: PR template, issue forms, and the `playbook-lint` workflow that enforces the PR rules |
+| [`standards/`](standards/) | Coding conventions: general, Java, C# |
+| [`style/`](style/) | How documentation is written |
+| [`archive/v1/`](archive/v1/) | Version 1 (the Planner/Executor model), kept for reference and superseded by this playbook |
 
 ---
 
-## For AI Coding Agents
+## License
 
-See [`AGENTS.md`](AGENTS.md) — this file is written specifically for AI assistants and explains how to apply these standards when working on any project.
-
----
-
-## Roles
-
-There are two roles: **PLANNER** and **EXECUTOR**. See [`process/roles.md`](process/roles.md) for definitions.
-
----
-
-## Standards
-
-| File | Covers |
-|------|--------|
-| [`standards/general.md`](standards/general.md) | Language-agnostic principles valid for all code |
-| [`standards/java.md`](standards/java.md) | Java 21 naming, structure, patterns, and idioms |
-
----
-
-## Process
-
-| File | Covers |
-|------|--------|
-| [`process/roles.md`](process/roles.md) | PLANNER and EXECUTOR role definitions and workflows |
-| [`process/git-workflow.md`](process/git-workflow.md) | Branch naming, commit messages, merge strategy |
-
----
-
-## Templates
-
-All templates live in [`templates/`](templates/). When starting a new project or adding a design artifact, copy the relevant template and fill in the placeholders.
-
-| Template | Use For |
-|----------|---------|
-| [`templates/GOALS.md`](templates/GOALS.md) | Project goals — user-defined value statements |
-| [`templates/DESIGN.md`](templates/DESIGN.md) | Comprehensive design breakdown — agent-optimized |
-| [`templates/FEATURES.md`](templates/FEATURES.md) | Catalog of implemented features linked to goals |
-| [`templates/BACKLOG.md`](templates/BACKLOG.md) | Work items derived from the design |
-| [`templates/DRIFT.md`](templates/DRIFT.md) | Counter-goal implementation log |
+[CC BY 4.0](LICENSE). Use it, adapt it, credit it.

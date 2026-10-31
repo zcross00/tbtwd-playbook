@@ -42,7 +42,7 @@ Each system section describes a coherent area of functionality needed to realize
 
 #### Components
 
-{{List the concrete classes, modules, data structures, or UI elements this system requires. Be specific — an EXECUTOR will use this to understand what to build.}}
+{{List the concrete classes, modules, data structures, or UI elements this system requires. Be specific — a work thread will use this to understand what to build.}}
 
 #### Behaviors
 

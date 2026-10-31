@@ -1,0 +1,28 @@
+name: Work
+description: A planned piece of work (one PR, L or smaller)
+body:
+  - type: textarea
+    id: asks
+    attributes:
+      label: Asks
+      description: Numbered, each one checkable.
+      placeholder: "1. ...\n2. ..."
+    validations:
+      required: true
+  - type: input
+    id: check
+    attributes:
+      label: Check
+      description: The done-when, naming the test, check or measurement.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Spec link on main, the owner's words quoted with date and link, related issues.
+  - type: textarea
+    id: unknowns
+    attributes:
+      label: Unknowns
+      description: Each one filed as its own time-boxed investigation issue.
