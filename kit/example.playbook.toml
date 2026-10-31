@@ -1,0 +1,108 @@
+# A project's settings for the kit. Copy this to `.playbook.toml` at the root
+# of the project's repository and change the values. Every key is optional:
+# one left out takes the default in kit/lib/playbook_config.py.
+#
+# The kit's own tests read this file (PLAYBOOK_CONFIG), so its values are
+# those of the project the kit was extracted from.
+
+[project]
+repo = "zcross00/sovereign-space"
+# The owner's GitHub login: only their own comments answer a decision.
+owner_login = "zcross00"
+# What the generated pages call the owner.
+owner_name = "Zac"
+# The owner's day, as a fixed offset from UTC (due and close dates).
+utc_offset_hours = -6
+playbook_repo = "zcross00/tbtwd-playbook"
+
+[board]
+# The owner's user Project (v2) that `board:` lines are copied to.
+project = "Sovereign Dev"
+lookback_days = 14
+# Iteration fields a `day=` line sets: the 1-day one and the week.
+iteration_fields = ["Day", "Week"]
+
+# `area:` label -> the board's Team option.
+[board.teams]
+"area: simulation" = "Simulation"
+"area: ship combat" = "Ship combat"
+"area: navigation" = "Navigation"
+"area: boarding" = "Boarding"
+"area: art and UI" = "Art and UI"
+"area: dev process" = "Dev process"
+"area: npc and factions" = "NPC and factions"
+"area: progression" = "Progression"
+"area: design" = "Design"
+
+[milestones]
+# The workflow whose scheduled runs on main are the nightly full check.
+nightly_workflow = "ci.yml"
+# Thousands of output tokens a milestone thread burns a day, until it has
+# a day of its own history.
+planned_rate = 150
+
+[forecast]
+days = 3
+min_signal = 100
+unestimated = 60
+playtest_days = 1
+closed_lookback = 14
+
+[wiki]
+title = "Sovereign"
+tagline = "A single-player frontier where every other captain is alive: they trade, build, scheme, fight and die whether or not you're watching."
+# banner.svg, gallery.json (file, caption, milestone) and the screenshots.
+art_dir = "docs/wiki-art"
+vision = "docs/VISION.md"
+# [wiki page, repo file] for each page copied from the repo as written.
+hand_pages = [["Development-process", "docs/DEVELOPMENT-PROCESS.md"]]
+reviewed_too = ["docs/VISION.md"]
+review_days = 30
+pending_days = 3
+needs_owner_label = "needs Zac"
+
+[queue]
+ci_workflow = "ci.yml"
+# Code review's branch, where it builds every merge train.
+train_branch = "claude/project-thread-rwltj7"
+# No run goes to a hosted machine past this much of the month's spend.
+overflow_under = 34.0
+
+# Dollars per run, measured and rounded up: an overflow full run, and each
+# workflow that runs on GitHub's machines.
+[queue.cost]
+overflow = 5.0
+"hosted.yml" = 4.0
+"playtest.yml" = 1.2
+
+[hosted]
+# The month's budget for GitHub-hosted minutes, in dollars.
+budget = 46.0
+warn = 34.0
+stop = 42.0
+# [workflow file, event ("" for any)] for each workflow that runs on
+# GitHub's machines.
+workflows = [
+  ["hosted.yml", ""],
+  ["playtest.yml", ""],
+  ["release-notes.yml", ""],
+  ["churn.yml", ""],
+  ["board.yml", "schedule"],
+]
+
+[ci]
+docs_only = '^docs/|\.md$'
+local_check = "scripts/ci.sh"
+
+[releases]
+tag_pattern = '^m(\d+)-playtest-(\d+)$'
+
+[releases.old_tags]
+"s6-playtest-1" = 12
+
+# How kit/churn/replay.py sorts a conflict by cause.
+[replay]
+check_paths = ["scripts/ci.sh", ".github/workflows/ci.yml"]
+check_lists = ["const CHECKS", "const SHARED", "fn default_seeds"]
+code_lists = ["enum Command", "fn run", "struct Economy", "enum EventKind", "struct Pilot", "struct World"]
+save_paths = ["sim/src/save.rs"]

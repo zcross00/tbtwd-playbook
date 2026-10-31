@@ -1,0 +1,53 @@
+name: kit-board
+
+# Copies the `board:` lines threads write on issues into the owner's project
+# board's fields (kit/board/sync.py). A dry run unless `apply` is true.
+# The caller keeps the triggers (issue_comment, issues, a schedule backstop),
+# the filter on who commented, and the concurrency group. Needs BOARD_TOKEN,
+# a classic PAT with `project` scope.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      apply:
+        type: boolean
+        default: false
+    secrets:
+      BOARD_TOKEN:
+        required: true
+
+jobs:
+  sync:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: board/sync.py ${{ inputs.apply && '--apply' || '' }}
+        env:
+          BOARD_TOKEN: ${{ secrets.BOARD_TOKEN }}

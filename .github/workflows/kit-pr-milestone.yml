@@ -1,0 +1,49 @@
+name: kit-pr-milestone
+
+# Gives each open PR the milestone of the issues on its `Refs` lines
+# (kit/board/pr_milestone.py). The caller (pull_request_target, so the
+# playbook's main copy runs, never the PR's) needs `issues: write` and
+# `pull-requests: write`, and should skip PRs from forks.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      apply:
+        type: boolean
+        default: true
+
+jobs:
+  milestone:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: board/pr_milestone.py ${{ inputs.apply && '--apply' || '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}

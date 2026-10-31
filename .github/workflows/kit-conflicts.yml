@@ -1,0 +1,30 @@
+name: kit-conflicts
+
+# Labels open PRs that no longer merge cleanly with main `conflict`, and
+# takes the label off once they do, so nobody is asked to merge a conflicted
+# PR. The caller runs on pushes to main and pull_request_target, and needs
+# `pull-requests: write`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        type: string
+        default: '["ubuntu-latest"]'
+      comment:
+        description: What a newly conflicted PR is told
+        type: string
+        default: "This PR conflicts with `main`. Merge main, run the full local check, and push again."
+
+jobs:
+  label:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: eps1lon/actions-label-merge-conflict@v3
+        with:
+          dirtyLabel: conflict
+          repoToken: ${{ github.token }}
+          # GitHub works out mergeability after a push; wait for it.
+          retryAfter: 15
+          retryMax: 8
+          commentOnDirty: ${{ inputs.comment }}

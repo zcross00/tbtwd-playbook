@@ -1,0 +1,19 @@
+name: kit-run
+description: >-
+  Runs one of the playbook kit's scripts from the project's checkout, with
+  bash on Linux and macOS and Git's bash on Windows (a bare `bash` finds WSL's
+  on a Windows runner). The calling step's `env` reaches the script. Expects
+  the playbook checked out at .playbook (every kit-* workflow does that).
+inputs:
+  script:
+    description: The script under kit/ and its arguments, e.g. "board/sync.py --apply"
+    required: true
+runs:
+  using: composite
+  steps:
+    - if: runner.os == 'Windows'
+      shell: cmd
+      run: '"%ProgramFiles%\Git\bin\bash.exe" --noprofile --norc .playbook/kit/run.sh ${{ inputs.script }}'
+    - if: runner.os != 'Windows'
+      shell: bash
+      run: bash .playbook/kit/run.sh ${{ inputs.script }}

@@ -1,0 +1,49 @@
+name: kit-release-notes
+
+# Links each playtest pre-release to its milestone, issues and commit, and
+# marks older builds superseded (kit/releases/release_notes.py). `delete`
+# names a release that isn't a playtest, to delete with its tag. The caller
+# needs `contents: write` and `issues: read`; the runner needs `gh`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      delete:
+        type: string
+        default: ""
+
+jobs:
+  notes:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: releases/release_notes.py ${{ inputs.delete != '' && format('--delete {0}', inputs.delete) || '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}

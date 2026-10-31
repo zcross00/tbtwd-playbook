@@ -1,0 +1,63 @@
+name: kit-decision-answer
+
+# The owner answers a decision by commenting on its issue: kit/wiki/answer.py
+# quotes the comment into the body and closes the issue, then the wiki is
+# regenerated (an issue the job's token closes sends no event). The caller
+# runs on issue_comment and filters to the owner's own comments on open
+# `decision` issues (answer.py checks again); it needs `contents: write`,
+# `issues: write`, `pull-requests: read` and `actions: read`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      paths:
+        description: The project files the pages are built from (newline-separated), besides .playbook.toml
+        type: string
+        default: |
+          docs
+
+jobs:
+  answer:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: wiki/answer.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  publish:
+    needs: answer
+    # By its full name: a nested ./ path is read against the caller's repo.
+    uses: zcross00/tbtwd-playbook/.github/workflows/kit-wiki.yml@main
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      playbook-repo: ${{ inputs.playbook-repo }}
+      playbook-ref: ${{ inputs.playbook-ref }}
+      paths: ${{ inputs.paths }}
