@@ -1,0 +1,52 @@
+name: kit-wiki
+
+# Regenerates the project's wiki from GitHub and pushes it (kit/wiki/gen.py,
+# publish.sh). Every page is generated, so none goes stale. The caller keeps
+# the triggers and should put this in one concurrency group with
+# kit-decision-answer, so two pushes never race; it needs `contents: write`,
+# `issues: read`, `pull-requests: read` and `actions: read`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      paths:
+        description: The project files the pages are built from (newline-separated), besides .playbook.toml
+        type: string
+        default: |
+          docs
+
+jobs:
+  publish:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+            ${{ inputs.paths }}
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: wiki/publish.sh
+        env:
+          GH_TOKEN: ${{ github.token }}

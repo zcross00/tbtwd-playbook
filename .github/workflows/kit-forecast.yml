@@ -1,0 +1,49 @@
+name: kit-forecast
+
+# Re-forecasts each open milestone's due date from its measured pace, and
+# gives a recently closed milestone its forecast-against-close line
+# (kit/board/forecast.py). A dry run unless `apply` is true. The caller
+# needs `issues: write`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+      apply:
+        type: boolean
+        default: false
+
+jobs:
+  forecast:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: board/forecast.py ${{ inputs.apply && '--apply' || '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}

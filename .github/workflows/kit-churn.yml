@@ -1,0 +1,47 @@
+name: kit-churn
+
+# The week's build churn (kit/churn/week.sh) on the job summary: full-runner
+# queue wait, CI wall time per tier, and re-merges of main per merged PR.
+# The caller needs `actions: read`, `contents: read` and
+# `pull-requests: read`; the runner needs `gh` and `jq` (ubuntu-latest has both).
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON (a self-hosted Windows runner works, Python or not)
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        description: The playbook ref the kit is read from (the process is main)
+        type: string
+        default: main
+
+jobs:
+  churn:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: churn/week.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}

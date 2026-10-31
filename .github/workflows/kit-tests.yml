@@ -1,0 +1,29 @@
+name: kit-tests
+
+# The kit's own tests (kit/test.sh), on every PR that touches the kit, its
+# action or its workflows. The playbook is public, so this costs nothing.
+on:
+  pull_request:
+    paths: [kit/**, .github/actions/**, .github/workflows/kit-*.yml]
+  push:
+    branches: [main]
+    paths: [kit/**, .github/actions/**, .github/workflows/kit-*.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: bash kit/test.sh
+      - name: workflows parse
+        run: |
+          pip install -q pyyaml
+          python3 -c 'import sys, yaml; [yaml.safe_load(open(f)) for f in sys.argv[1:]]' .github/workflows/*.yml .github/actions/*/action.yml

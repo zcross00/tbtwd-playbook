@@ -42,6 +42,7 @@ Agents start at [AGENTS.md](AGENTS.md).
 | Directory | Purpose |
 |-----------|---------|
 | [`templates/`](templates/) | Issue, milestone, decision and project-process templates, plus the design-artifact templates |
+| [`kit/`](kit/) | The process tooling: board sync, burn-down and forecast, the generated wiki, the CI queue and merge trains, cost and churn reports, release notes, the daily review. Projects call it through reusable workflows and one `.playbook.toml` |
 | [`templates/github/`](templates/github/) | Drop-in GitHub files: PR template, issue forms, and the `playbook-lint` workflow that enforces the PR rules |
 | [`standards/`](standards/) | Coding conventions: general, Java, C# |
 | [`style/`](style/) | How documentation is written |

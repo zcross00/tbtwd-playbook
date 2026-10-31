@@ -6,7 +6,7 @@
 
 1. **Write the vision.** `docs/VISION.md`: what the project is for, the priorities in order (A, B, C), and the fixed rules. Only the owner changes it.
 2. **Make the project's PROCESS.md** from [templates/PROCESS.md](../templates/PROCESS.md): the owner, the roles and who fills them, the area table, the labels, the CI tier and commands, where the owner reads. Link this playbook; don't copy it, and don't override it.
-3. **Copy the GitHub kit** from [templates/github/](../templates/github/): PR template, issue forms, `playbook-lint` workflow.
+3. **Copy the GitHub kit** from [templates/github/](../templates/github/): PR template, issue forms, `playbook-lint` workflow. **Wire up the tooling** from [kit/](../kit/): a `.playbook.toml` and thin workflows calling the playbook's `kit-*` workflows. The project keeps no copy of the tools.
 4. **Create the labels**: `area: …` per area, `priority: A|B|C`, `parked`, `decision`, `deferred gate`, `verification`, `main-fix`, `train`.
 5. **Pick a CI tier** ([CI tiers](06-ci.md)); Tier 0 is fine to start. Write the full local check script first; CI runs the same script.
 6. **Start the standing roles**: coordinator, Code review, Verification, Dev process. Then one work thread per milestone.
@@ -27,9 +27,9 @@ The process falls apart when the rules live only in people's heads. These are en
 | Only trains merge; nothing merges without the full check | Branch protection: required `full` check that only a train runs; up-to-date branch required |
 | Docs-only PRs skip the heavy runner | A `files` job in CI |
 | Coverage floors and untested-output lists only move with a `deferred gate` issue | CI compares against `main`'s copies |
-| Board fields match `board:` lines | Board sync workflow |
-| Due dates follow measured pace | Daily re-forecast workflow |
-| Stale issues get reviewed | Daily backlog review (scheduled) |
+| Board fields match `board:` lines | Board sync workflow (`kit-board`) |
+| Due dates follow measured pace | Daily re-forecast workflow (`kit-forecast`) |
+| Stale issues get reviewed | Daily backlog review (scheduled; `kit/review/scan.py`) |
 | The process gets reviewed | Weekly retro (scheduled) |
 | Playbook changes merge only in the Saturday window, or as a declared emergency | `merge-window` workflow, a required status on `main` |
 
