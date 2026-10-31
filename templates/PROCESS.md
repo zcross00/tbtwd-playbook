@@ -1,6 +1,6 @@
 # {Project}: development process
 
-This project follows the [TBTWD Playbook](https://github.com/zcross00/tbtwd-playbook), version **2.0**. This file holds only what is specific to this project, and the differences from the playbook. Where the two disagree, this file wins for this project.
+This project follows the [TBTWD Playbook](https://github.com/zcross00/tbtwd-playbook) as it stands on its `main` branch. The playbook is the only source of process rules. This file holds only facts specific to this project (who fills the roles, the areas, labels, CI commands, times) and engineering rules about its code. It never restates or overrides a process rule; a gap or a disagreement is a PR to the playbook.
 
 ---
 
@@ -55,9 +55,3 @@ Priorities: A = {…}, B = {…}, C = {…}.
 
 - {e.g. the core library has no UI-framework dependency}
 - {e.g. saved data migrates from release N on}
-
-## Differences from the playbook
-
-| Playbook rule | This project | Why |
-|---|---|---|
-| {…} | {…} | {…} |

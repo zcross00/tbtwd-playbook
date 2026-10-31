@@ -5,7 +5,7 @@
 ## Day one on a new project
 
 1. **Write the vision.** `docs/VISION.md`: what the project is for, the priorities in order (A, B, C), and the fixed rules. Only the owner changes it.
-2. **Make the project's PROCESS.md** from [templates/PROCESS.md](../templates/PROCESS.md): the owner, the roles and who fills them, the area table, the labels, the CI tier and commands, where the owner reads. Link this playbook; don't copy it.
+2. **Make the project's PROCESS.md** from [templates/PROCESS.md](../templates/PROCESS.md): the owner, the roles and who fills them, the area table, the labels, the CI tier and commands, where the owner reads. Link this playbook; don't copy it, and don't override it.
 3. **Copy the GitHub kit** from [templates/github/](../templates/github/): PR template, issue forms, `playbook-lint` workflow.
 4. **Create the labels**: `area: …` per area, `priority: A|B|C`, `parked`, `decision`, `deferred gate`, `verification`, `main-fix`, `train`.
 5. **Pick a CI tier** ([CI tiers](06-ci.md)); Tier 0 is fine to start. Write the full local check script first; CI runs the same script.
@@ -31,6 +31,7 @@ The process falls apart when the rules live only in people's heads. These are en
 | Due dates follow measured pace | Daily re-forecast workflow |
 | Stale issues get reviewed | Daily backlog review (scheduled) |
 | The process gets reviewed | Weekly retro (scheduled) |
+| Playbook changes merge only in the Saturday window, or as a declared emergency | `merge-window` workflow, a required status on `main` |
 
 The rest (one PR per thread, ask through the coordinator, two-attempt rule) are enforced by roles: Code review asks for changes, Verification reopens, the coordinator redirects.
 
@@ -53,4 +54,6 @@ What does *not* change: verified Done as the only progress, a merge closes nothi
 
 ## Adapting without drifting
 
-A project may differ from the playbook. When it does, its PROCESS.md says where and why, in a "Differences from the playbook" section. A difference that proves itself on two projects is proposed back here as a PR.
+A project follows the playbook's `main` as it stands; there is no project-level override and no version pin. When a project needs something the playbook doesn't say, or says differently, that is a PR here, merged in the Saturday window ([CONTRIBUTING.md](../CONTRIBUTING.md)). Until it merges, the playbook as it stands applies.
+
+*Why:* on the reference project the project's own process file had grown into a second, longer copy of these rules (over 300 lines), worded differently in places, so there were two answers to the same question.

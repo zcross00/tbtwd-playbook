@@ -56,4 +56,4 @@ Status lives in one place (the issue tracker and its board), and nowhere else. D
 
 ## The process is under the same rules
 
-The process itself, the owner included, is subject to the weekly retro ([Cadences](09-cadences.md)). It changes through a PR, not through drift. A change to the process mid-week, outside the retro, needs a blocker to justify it.
+The process itself, the owner included, is subject to the weekly retro ([Cadences](09-cadences.md)). It is this playbook's `main` and nothing else, and it changes through a PR, not through drift. Changes merge on Saturday at 11:00 America/Chicago; only an emergency the owner declares merges sooner ([CONTRIBUTING.md](../CONTRIBUTING.md)).
