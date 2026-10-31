@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2 (merges in the Saturday window)
+
+Rules the reference project kept in its own process file, brought into the playbook:
+
+- A new system gets a spec before its code (Tracking work).
+- Acceptance feedback is kept as a verbatim transcript that its issues link (Tracking work).
+- Work that turns out bigger mid-build is split and re-planned (Tracking work).
+- A PR with no issue opens one first, unless docs-only (Lifecycle, rule 1).
+- Reopening an issue in a closed milestone reopens the milestone (Lifecycle, rule 12).
+- A train re-runs when `main` moved under it in overlapping files (Working in parallel).
+
 ## 2.0 (2026-10-31)
 
 - Rebranded as the **TBTWD Playbook**, repository renamed from `ProcessDocumentation` to `tbtwd-playbook`.
