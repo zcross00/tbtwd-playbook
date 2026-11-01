@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5 (merges in the Saturday window)
+
+- Grooming checks dependency order before it sets a due date. A milestone names the milestones it waits on with `After: m<N>` and is due no earlier than the day after the latest of them. Dependents move together (Estimating, Burn-down and re-forecast). The daily re-forecast learning `After:` is kit issue #10.
+
 ## 2.3 (2026-10-31, initial setup; the owner waived the Saturday window)
 
 - New `kit/`: the process tooling moved here from the reference project, so the project keeps only one `.playbook.toml` and thin workflows. Board sync, milestone burn-down and forecast, PR milestones, the generated wiki and decision answers, the CI queue, newer-run check and merge trains, the CI gate scripts, hosted-minutes and churn reports, conflict replay, release notes, the daily backlog scan and the weekly usage report.
