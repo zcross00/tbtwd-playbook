@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6 (merges in the Saturday window)
+
+- Forecasts are calibrated in both directions. Early counts as a miss, the same as late, and Dev process keeps every closed milestone's signed error. The weekly retro tunes the forecast settings when the mean drifts more than half a day either way (Estimating, Burn-down and re-forecast).
+
 ## 2.3 (2026-10-31, initial setup; the owner waived the Saturday window)
 
 - New `kit/`: the process tooling moved here from the reference project, so the project keeps only one `.playbook.toml` and thin workflows. Board sync, milestone burn-down and forecast, PR milestones, the generated wiki and decision answers, the CI queue, newer-run check and merge trains, the CI gate scripts, hosted-minutes and churn reports, conflict replay, release notes, the daily backlog scan and the weekly usage report.
