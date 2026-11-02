@@ -24,6 +24,7 @@ Extracted from the reference project, where each tool was built for a failure it
 | | `week.sh` | The week's build churn: queue wait, CI wall time, re-merges of main |
 | | `replay.py` | Replays merged PRs pairwise and sorts their conflicts by cause |
 | `releases/` | `release_notes.py` | Links each playtest pre-release to its milestone, issues and commit; marks older builds superseded |
+| `lint/` | `comments.py` | Lists code comments, which the standards ban ([standards §4](../standards/general.md#4-no-comments)). `--diff BASE` only those on lines added since `BASE`, the PR check; `--count` the count per file, for the sweep of existing code. Exempt paths come from `[comments] exempt` |
 | `review/` | `scan.py` | Picks and flags the day's backlog review ([Cadences](../playbook/09-cadences.md)) |
 | `usage/` | `pace.py`, `pc_hours.py`, `usage_report.py` | The weekly usage report: pace against the reset, self-hosted runner hours, cost by area |
 | `lib/` | `playbook_config.py`, `config.sh` | Reads `.playbook.toml` for the Python and shell tools |
@@ -87,6 +88,7 @@ Every script runs from the project's checkout. `run.sh` runs one (`kit/run.sh bo
 
    Add `.playbook/` to the project's `.gitignore`.
 4. **From a session**, clone the playbook and run tools from the project's checkout: `python3 ../tbtwd-playbook/kit/churn/minutes.py --days 7`.
+5. **The comment check** runs the same way: `python3 ../tbtwd-playbook/kit/lint/comments.py --diff origin/main` before a PR is marked ready, and on every train head. `[comments] exempt` lists glob patterns of paths it skips: generated files and vendored code only ([standards §4](../standards/general.md#4-no-comments), edge cases 1 and 2). A `*` matches across directories. A project may also run it as a step of its CI through `kit-run` (`script: lint/comments.py --diff origin/main`), after a checkout with enough history to find the merge base.
 
 ---
 

@@ -26,6 +26,7 @@ Read this before any non-trivial task on a project that follows the TBTWD Playbo
 | One open code PR per thread; draft until the local full check is green; push only when ready | [Parallel](playbook/05-parallel.md) |
 | Run the project's full local check before every push | [CI](playbook/06-ci.md) |
 | Tests don't depend on random worlds or wall-clock time | [Gates](playbook/07-gates.md) |
+| No code comments, doc comments included; the why goes in the design docs. Run `kit/lint/comments.py --diff origin/main` before marking a PR ready | [Standards §4](standards/general.md#4-no-comments) |
 | Every board-visible change writes its `board:` line in the same turn | [Estimating](playbook/08-estimating.md) |
 | Only Code review merges; only Verification closes | [Roles](playbook/02-roles.md) |
 

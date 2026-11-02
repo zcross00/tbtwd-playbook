@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- Standards §4 is now **No comments**: code carries no comments of any kind, doc comments included, and the why lives in the design docs. It replaces "comment the why, never the what". Edge cases are decided in the rule: generated and vendored code exempt by path, no license headers, lint allow attributes allowed without a reason, tool directives allowed alone, no `SAFETY:` comments, docs and output strings out of scope.
+- New `kit/lint/comments.py`: lists comments in code files; `--diff` checks a PR's added lines, `--count` tracks the sweep of existing code. `[comments] exempt` in `.playbook.toml`.
+- Code review asks for changes when the check lists a comment on an added line (Lifecycle, rule 7). Java and C# standards and the documentation style guide no longer model comments.
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.

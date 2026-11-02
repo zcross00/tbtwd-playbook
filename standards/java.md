@@ -191,9 +191,8 @@ characters.stream().forEach(c -> {
   @JsonIgnore
   public int computeEffortBudget() { ... }
   ```
-- Jackson requires a **no-arg constructor** for deserialization. Add one with a comment explaining why:
+- Jackson requires a **no-arg constructor** for deserialization. Add one with no comment; why it exists goes in the design doc's serialization section ([general.md §4](general.md#4-no-comments)):
   ```java
-  /** Required by Jackson for deserialization. */
   public Character() {}
   ```
 - Don't serialize transient UI state or runtime caches. Keep the domain model clean.
@@ -265,23 +264,20 @@ class ResolutionEngineTest {
 
     @Test
     void hungerWorsensWhenCharacterSkipsForageForThreeDays() {
-        // Given
         Character character = world.getPlayer();
         assertThat(character.getHealth().getHunger()).isEqualTo(HungerLevel.SATISFIED);
 
-        // When
         for (int i = 0; i < 3; i++) {
             engine.advanceDay(world, List.of());
         }
 
-        // Then
         assertThat(character.getHealth().getHunger())
             .isEqualTo(HungerLevel.HUNGRY);
     }
 }
 ```
 
-- **Arrange / Act / Assert** structure — use comments (`// Given`, `// When`, `// Then`) for test methods longer than ~5 lines.
+- **Arrange / Act / Assert** structure, with a blank line between the three parts and no comments labelling them. A test too long to read that way is split, or its setup moves into a helper named for what it sets up.
 - One test = one observable behavior.
 - Test class names: `{ClassName}Test` in the same package as the class under test.
 - Use `@BeforeEach` for shared setup; avoid `@BeforeAll` unless the setup is genuinely expensive and stateless.

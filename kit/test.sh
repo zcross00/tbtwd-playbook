@@ -7,7 +7,7 @@ kit="$(cd "$(dirname "$0")" && pwd)"
 export PLAYBOOK_CONFIG="$kit/example.playbook.toml"
 py=${PYTHON:-python3}
 fail=0
-for d in lib board wiki queue releases; do
+for d in lib board wiki queue releases lint; do
   echo "== kit/$d"
   $py -m unittest discover -s "$kit/$d" -t "$kit/$d" || fail=1
 done
