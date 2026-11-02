@@ -95,13 +95,11 @@ if (component is HealthData health)
 Enable nullable reference types in project settings. Annotate intentionally nullable parameters and returns:
 
 ```csharp
-// Nullable return — caller must handle
 public Character? FindCharacterById(string id)
 {
     return characters.FirstOrDefault(c => c.Id == id);
 }
 
-// Non-nullable parameter — caller guarantees
 public void AddCharacter(Character character)
 {
     characters.Add(character);
@@ -210,7 +208,6 @@ public class CharacterData
     public HealthState Health = new();
     public List<string> KnownConcepts = new();
 
-    // Not serialized — computed at runtime
     [NonSerialized]
     public float CachedEffortBudget;
 }

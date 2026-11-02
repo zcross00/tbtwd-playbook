@@ -148,6 +148,6 @@ Follow the structure in [`templates/PROTOTYPE_FINDINGS.md`](../templates/PROTOTY
 | "As mentioned above..." | Just say it again clearly, or link to the section |
 | "TODO: fill this in" | Leave a `{{placeholder}}` with clear instruction |
 | Vague section titles ("Notes", "Misc", "Other") | Name the content explicitly |
-| Documenting implementation details in design docs | Implementation detail → code comment or README; intent → design doc |
+| Restating the code line by line in design docs | The design doc holds the why (decisions, constraints, workarounds) and names the code it explains; the code itself holds no comments ([standards §4](../standards/general.md#4-no-comments)) |
 | Writing one giant paragraph for a complex mechanic | Break into sub-headings or structured list |
 | Trailing "etc." | Name the things — or admit you don't know yet |

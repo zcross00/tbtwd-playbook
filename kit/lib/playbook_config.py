@@ -92,6 +92,9 @@ DEFAULTS = {
         # Tags from before the pattern, and the milestone each belongs to.
         "old_tags": {},
     },
+    "comments": {
+        "exempt": [],
+    },
     "replay": {
         "check_paths": [],
         "check_lists": [],

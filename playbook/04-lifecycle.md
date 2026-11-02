@@ -27,7 +27,7 @@ A closed issue means the work is done, and the board is only worth reading if th
 4. **A loosened or deferred gate gets a tracking issue.** A PR that loosens, reports instead of gates, or defers any check or target files an issue labelled `deferred gate`: what changed, why, and what would restore it. It links it from the PR and related issues. Code review decides gate changes without the owner ([Roles](02-roles.md)). *Why:* a gate loosened in a PR body is forgotten once the PR merges.
 5. **Ready means the full local check is green** on the head you mark ready, merged with `main`. *Why:* the merge-gate runner is everyone's queue; a red run costs everyone a slot.
 6. **Push only when ready.** Work in draft, squash fix-ups locally. Each push to a ready PR restarts its merge-gate run.
-7. **Only Code review merges**, after a green merge-gate run on the tree that lands (in practice, the merge train's head). It asks for changes when rules 1–4 aren't met, or when a ref'd issue isn't groomed into a milestone. Nobody asks the owner to merge.
+7. **Only Code review merges**, after a green merge-gate run on the tree that lands (in practice, the merge train's head). It asks for changes when rules 1–4 aren't met, when a ref'd issue isn't groomed into a milestone, or when the comment check (`kit/lint/comments.py --diff origin/main`) lists a comment on an added line ([standards §4](../standards/general.md#4-no-comments)). Nobody asks the owner to merge.
 8. **A PR handed over for merging is frozen.** Follow-ups go in the next PR. The one exception is a rebase to resolve a conflict, after which the full local check runs again.
 
 ---

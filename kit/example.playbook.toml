@@ -94,6 +94,9 @@ workflows = [
 docs_only = '^docs/|\.md$'
 local_check = "scripts/ci.sh"
 
+[comments]
+exempt = ["data/generated/*", "vendor/*"]
+
 [releases]
 tag_pattern = '^m(\d+)-playtest-(\d+)$'
 
