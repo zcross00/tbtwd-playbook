@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1 (2026-11-02, owner declared it urgent)
+
+- License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
+
 ## 2.3 (2026-10-31, initial setup; the owner waived the Saturday window)
 
 - New `kit/`: the process tooling moved here from the reference project, so the project keeps only one `.playbook.toml` and thin workflows. Board sync, milestone burn-down and forecast, PR milestones, the generated wiki and decision answers, the CI queue, newer-run check and merge trains, the CI gate scripts, hosted-minutes and churn reports, conflict replay, release notes, the daily backlog scan and the weekly usage report.

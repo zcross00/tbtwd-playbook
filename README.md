@@ -52,4 +52,6 @@ Agents start at [AGENTS.md](AGENTS.md).
 
 ## License
 
-[CC BY 4.0](LICENSE). Use it, adapt it, credit it.
+[MIT](LICENSE), for everything in this repository: the playbook pages, templates, standards and the `kit/` tooling alike. Use it for any purpose, commercial included, at no cost: copy it, change it, ship it inside paid or closed work. The one condition is keeping the copyright and license notice with substantial copies. "Software" in the license covers the documentation here too.
+
+Before 2026-11-02 the repository was under CC BY 4.0, which also allowed commercial use; MIT replaces it so the code is under a software license and one standard license covers the whole repo.
