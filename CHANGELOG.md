@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- Acceptance builds start where a player starts, at their own base or vehicle, never in a save staged mid-action (Tracking; the milestone template's Setup line).
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
