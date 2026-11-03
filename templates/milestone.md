@@ -17,6 +17,6 @@ Paste everything below into the milestone description.
 **Dates:** forecast {YYYY-MM-DD} (from measured pace). {Date fixed: YYYY-MM-DD, only for an outside commitment}
 
 **Acceptance (last done-when):**
-- **Setup:** {the build and starting state, e.g. "the m12 build, save handoff.sav"}
+- **Setup:** {the build and starting state, where a player starts and never staged mid-action, e.g. "the m12 build, New game" or "the m12 build, a year-6 save aboard your own ship, docked"}
 - **Try:** {what to do, in steps}
 - **Pass:** {what the owner sees that means it passed}
