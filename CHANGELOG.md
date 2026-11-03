@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- New page, Two crews on one repository: a second agent structure (coordinator, threads, budget) beside the first. Code review, Verification, Dev process, grooming approval and the owner's roadmap channel stay single in the home crew; milestones carry a `Crew:` line; the crews talk only through the tracker; the added crew starts only after CI measures room for it (Two crews; Roles; AGENTS.md).
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
