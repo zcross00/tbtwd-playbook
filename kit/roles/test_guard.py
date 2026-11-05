@@ -27,6 +27,23 @@ class Review(unittest.TestCase):
         self.assertIsNone(guard.review_action(review("Role: architect" + FOOT, state="commented")))
 
 
+class PrState(unittest.TestCase):
+    def r(self, body, sha="h1", state="APPROVED"):
+        return {"state": state, "body": body, "commit_id": sha}
+
+    def test_inquisitor_approval_on_head_passes(self):
+        self.assertEqual(guard.pr_state([self.r("Role: inquisitor" + FOOT)], "h1")[0], "success")
+
+    def test_owner_by_hand_passes(self):
+        self.assertEqual(guard.pr_state([self.r("looks good")], "h1")[0], "success")
+
+    def test_stale_approval_waits(self):
+        self.assertEqual(guard.pr_state([self.r("Role: inquisitor" + FOOT, sha="h0")], "h1")[0], "pending")
+
+    def test_architect_approval_waits(self):
+        self.assertEqual(guard.pr_state([self.r("Role: architect" + FOOT)], "h1")[0], "pending")
+
+
 def closed(sender_type="User"):
     return {"action": "closed", "sender": {"type": sender_type},
             "issue": {"closed_at": "2026-11-07T12:00:00Z"}}

@@ -3,9 +3,12 @@ name: kit-role-guard
 # Holds agents to their thread's role (playbook/12-identities.md): kit/roles/guard.py
 # dismisses an agent approval without the inquisitor stamp, reopens an issue an
 # agent closed without an inquisitor note, and labels an agent-opened issue
-# without an overseer or inquisitor stamp. The caller runs on
-# `issues: [opened, closed]` and `pull_request_review: [submitted]`, and needs
-# `issues: write` and `pull-requests: write`.
+# without an overseer or inquisitor stamp, and sets the `role-guard` status on
+# every PR head (success once an inquisitor approved it; the ruleset requires
+# it). The caller runs on `issues: [opened, closed]`,
+# `pull_request_review: [submitted]` and
+# `pull_request: [opened, synchronize, reopened, ready_for_review]`, and needs
+# `issues: write`, `pull-requests: write` and `statuses: write`.
 on:
   workflow_call:
     inputs:

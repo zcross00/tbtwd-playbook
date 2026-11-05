@@ -11,6 +11,9 @@ no AI footer) and workflow bots are never touched. For agent actions:
   note), or the issue is reopened.
 - A new issue needs the overseer or inquisitor stamp, or it is labelled
   `role-violation` for the retro.
+- Every PR head gets a `role-guard` commit status: success once an
+  inquisitor (or the owner by hand) approved that commit. The ruleset on
+  `main` requires it, so it shows in the merge box.
 
 Every correction also labels the item `role-violation` and says why.
 
@@ -47,6 +50,18 @@ def review_action(event):
     if not is_agent(body, review.get("performed_via_github_app")) or role(body) == "inquisitor":
         return None
     return ("dismiss", f"Only an inquisitor approves. This approval is stamped `{role(body) or 'no role'}`.")
+
+
+def pr_state(reviews, head_sha):
+    """The `role-guard` status for a PR head: success once an inquisitor (or the
+    owner by hand) approved that commit, else pending."""
+    for r in reviews:
+        if (r.get("state") or "").upper() != "APPROVED" or r.get("commit_id") != head_sha:
+            continue
+        body = r.get("body") or ""
+        if role(body) == "inquisitor" or not is_agent(body, r.get("performed_via_github_app")):
+            return "success", "Approved by an inquisitor"
+    return "pending", "Waiting for an inquisitor's approval on this commit"
 
 
 def close_action(event, comments, close_via_app):
@@ -94,6 +109,7 @@ def main():
     name = os.environ["GITHUB_EVENT_NAME"]
     with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:
         event = json.load(f)
+    act = None
     if name == "pull_request_review":
         act = review_action(event)
         if act:
@@ -101,6 +117,13 @@ def main():
             api("PUT", f"{pr['url']}/reviews/{event['review']['id']}/dismissals",
                 {"message": "Role guard: " + act[1]})
             flag(pr["issue_url"], act[1])
+    if name in ("pull_request", "pull_request_review"):
+        pr = event["pull_request"]
+        head = pr["head"]["sha"]
+        reviews = api("GET", pr["url"] + "/reviews?per_page=100") or []
+        state, why = pr_state(reviews, head)
+        api("POST", f"{pr['base']['repo']['url']}/statuses/{head}",
+            {"state": state, "context": "role-guard", "description": why})
     elif name == "issues":
         issue = event["issue"]
         act = open_action(event)

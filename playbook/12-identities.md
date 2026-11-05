@@ -21,15 +21,16 @@ A thread is given its role when it starts, on the first line of its instructions
 
 ## The guard
 
-The `kit-role-guard` workflow (`kit/roles/guard.py`) runs on every issue opened or closed and every review submitted. It touches only agent actions (made through the AI tool's app, or carrying its footer); the owner's own actions and workflow bots are left alone.
+The `kit-role-guard` workflow (`kit/roles/guard.py`, public in this repository) runs on every issue opened or closed, every PR push and every review submitted. It touches only agent actions (made through the AI tool's app, or carrying its footer); the owner's own actions and workflow bots are left alone.
 
 | Agent action | Allowed when | Otherwise |
 |---|---|---|
 | Approving review | Stamped `Role: inquisitor` | Dismissed |
+| PR head | An inquisitor (or the owner by hand) approved that commit | `role-guard` status stays pending, and the ruleset blocks the merge |
 | Closing an issue | An inquisitor comment (the verification note) came first | Reopened |
 | Opening an issue | Stamped `Role: overseer` or `Role: inquisitor` | Kept, labelled |
 
-Every correction labels the item `role-violation` with the reason, and the retro reviews the label weekly. Board moves and milestone changes can't be stamped, so they are reviewed at retro from the issue history, not guarded.
+Every correction labels the item `role-violation` with the reason, and the retro reviews the label weekly. Merges are blocked outright: both the `Verifiers` approval and `role-guard` show in every PR's merge box. Work items are corrected after the fact, because GitHub's fixed permission levels give every pushing account issue rights too. Board moves and milestone changes can't be stamped, so they are reviewed at retro from the issue history.
 
 ---
 
@@ -42,7 +43,7 @@ Every correction labels the item `role-violation` with the reason, and the retro
 | The owner's | The owner's own account |
 | A second one | A machine account (Write), created and owned by the owner, with two-factor authentication, on a paid plan if it isn't the owner's one free machine account |
 
-- Both logins are in team `Verifiers`. The ruleset on `main` requires 1 approval from `Verifiers`, dismisses stale approvals, requires the train's CI check, blocks force pushes and deletion, and has **no bypass list** (agents act as the owner, so an owner bypass would be theirs too).
+- Both logins are in team `Verifiers`. The ruleset on `main` requires 1 approval from `Verifiers`, dismisses stale approvals, requires the train's CI check and the `role-guard` status, blocks force pushes and deletion, and has **no bypass list** (agents act as the owner, so an owner bypass would be theirs too).
 - GitHub never lets an author approve their own PR, so **every PR needs an inquisitor in the other AI account** to approve it: cross-review. Each AI account runs at least one inquisitor.
 - When one AI account can't review (out of budget, not connected yet), Code review turns the ruleset off under a `deferred gate` issue ([Tests and gates](07-gates.md)) and back on when both review again. Code review owns these settings under its gate authority.
 - A third login (one per role) helps only where threads run on a machine with their own credentials, such as Remote Control sessions on a CI server with one `gh` login per role. That is optional and slow; adopt it only if the retro shows the guard isn't enough.

@@ -2,7 +2,7 @@
 
 ## 2.5 (merges in the Saturday window)
 
-- New page, GitHub identities: the project lives in an organization; each AI account has its own GitHub login (the owner's, and a developer machine account), both in team `Verifiers`. A ruleset on `main` requires one `Verifiers` approval and has no bypass list, so every PR needs the other account's approval (cross-review); each crew's Code review thread reviews the other crew's PRs. Includes the order for moving a personal repository into an organization (GitHub identities).
+- New page, Roles and GitHub identities: every thread is an overseer (plans, owns work items), architect (builds) or inquisitor (reviews, verifies, closes), and stamps every GitHub post with `Role:`. New `kit-role-guard` workflow (`kit/roles/guard.py`): dismisses non-inquisitor agent approvals, reopens issues closed without an inquisitor note, labels issues opened by the wrong role `role-violation`, and sets a `role-guard` status on every PR head that the ruleset requires. Each AI account connects to one GitHub login; both logins sit in team `Verifiers`, so every PR needs the other account's approval (cross-review), with no bypass list.
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
