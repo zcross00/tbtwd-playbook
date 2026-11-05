@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5 (merges in the Saturday window)
+
+- New page, GitHub identities: the project lives in an organization; Code review, Verification and Dev process act as GitHub Apps; Code review's verdict is a `code-review` check that a ruleset on `main` requires from its app; a second crew is one machine account with Write. Includes the order for moving a personal repository into an organization, and `kit/app/token.sh` for app tokens (GitHub identities; kit).
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
