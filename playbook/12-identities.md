@@ -1,49 +1,46 @@
 # 12. GitHub identities
 
-Most agents act on GitHub as the owner, through the owner's AI tool. That makes every gate a promise: GitHub can't tell Code review from a work thread, so a review "approval" is only as strong as everyone's discipline. This page gives the gate roles identities of their own, so GitHub itself enforces the gates that matter.
+When every agent acts on GitHub as the owner, through the owner's AI tool, every gate is a promise: GitHub can't tell Code review from a work thread, or either of them from the owner. This page gives the build side and the review side separate GitHub accounts, held by separate AI accounts, so GitHub itself enforces the review gate.
 
 ---
 
-## The shape
+## Three accounts
 
-- **The project lives in an organization** that the owner's personal account owns, on a plan that enforces rulesets on private repositories (GitHub Team or above).
-- **Gate roles are GitHub Apps**, not extra user accounts. Apps are free, need no seat, and don't count against the one free machine account a person may hold.
-- **Everyone else acts as the owner**, as before: coordinators and work threads push branches and open PRs through the owner's AI tool.
-- **A second crew ([Two crews](11-crews.md)) is one machine account** the owner creates and owns, with the org's Write role. It never holds an app key.
+The project lives in an organization that the owner's personal account owns, on a plan that enforces rulesets on private repositories (GitHub Team or above).
 
-| Role | App | Permissions on the project repo | Acts as the app to |
+| Account | Driven by | Org role | Does |
 |---|---|---|---|
-| Code review | `<Project> Code Review` | Checks, statuses, pull requests, contents: write | Post the `code-review` check, review, merge |
-| Verification | `<Project> Verification` | Issues: write; contents, pull requests: read | Close issues and post verification results |
-| Dev process | `<Project> Dev Process` | Actions, issues: write; org self-hosted runners: write | Runner and workflow housekeeping, usage readings |
+| **Owner** (the owner's own account) | The owner only | Owner | Direction, decisions, acceptance, emergency bypass |
+| **Developer** (machine account) | The build side's AI account: coordinator, work threads, Dev process | Member, Write | Pushes branches, opens PRs, comments, grooms |
+| **Verifier** (machine account) | The review side's AI account: Code review, Verification | Member, Write, sole member of team `Verifiers` | Reviews, approves, merges, closes issues and milestones |
 
-*Why apps:* GitHub's terms allow one free machine account per person, and a fake user per role would be a paid seat each. An app is the identity GitHub built for automation.
+- The owner creates and owns both machine accounts, with addresses on the company domain and two-factor authentication on. GitHub's terms allow one *free* machine account per person, so one of the two is on a paid personal plan.
+- **Each AI account connects to exactly one GitHub account.** The build side never holds the verifier's login. That separation is what makes the gate real; a shared credential would make it a convention again.
+- Agents never act as the owner. A comment from the owner's account is the owner, which is what [decision answers](03-tracking.md) rely on.
 
----
-
-## The gate is a check, not an approval
-
-Code review's verdict is a **check run named `code-review`** on the PR's head commit: success when there are no blocking findings, failure listing them when there are. The ruleset on `main` requires that check **with Code review's app as its expected source**, so a check of the same name from anyone else doesn't count.
-
-The ruleset on `main`:
-
-- Require a pull request before merging, with 0 approvals (the check is the approval).
-- Require status checks: `code-review` from the Code Review app, and the train's CI check.
-- Block force pushes and deletion.
-- Bypass: org admins only, used for an owner-declared emergency.
-
-Code review owns these settings under its gate authority ([Tests and gates](07-gates.md)) and may change them without asking the owner, like any other gate.
-
-*Why not an approving review:* GitHub documents that approvals from people with write access count; it doesn't document app approvals. A required check with an expected source is documented and can't be faked by another identity.
+*Why accounts, not GitHub Apps:* GitHub documents that approvals from accounts with write access count toward required reviews. It doesn't document app approvals, and an app's key would sit in a workspace every thread can read.
 
 ---
 
-## Using an app identity
+## The gate on `main`
 
-1. Each app's private key is stored as a secret in the crew's cloud environment, entered by the owner. Keys are never pasted into chat, issues or files.
-2. The role's thread turns the key into a one-hour installation token with `kit/app/token.sh` and calls the GitHub API with it.
-3. **Only the named role uses its key.** Every thread in one workspace can read the same environment, so this is a process rule, checked at retro, not a wall. The wall that GitHub enforces is between crews: the added crew's workspace holds no keys.
-4. A new required check leaves open PRs waiting until their next push, so Code review turns a new check on between trains and re-posts it on every open PR.
+A ruleset on the default branch:
+
+- Requires a pull request, with 1 approval from team `Verifiers` (the Required reviewers rule).
+- Dismisses stale approvals when new commits are pushed.
+- Requires the train's CI check.
+- Blocks force pushes and deletion.
+- Lets only the owner bypass, for an emergency the owner declares.
+
+The developer account authors every PR, can't approve its own work, and isn't in `Verifiers`, so nothing the build side does satisfies the rule. Code review owns these settings under its gate authority ([Tests and gates](07-gates.md)) and may change them without asking the owner, like any other gate.
+
+---
+
+## How this sits with two crews
+
+With this page, the second AI account in [Two crews](11-crews.md) is the **review side**: it runs Code review and Verification and nothing else. A build crew in the same AI account would hold the verifier's login. The crews still talk only through the tracker.
+
+Until the review side's AI account is connected, Code review works as before and the ruleset stays off. In the build side's account it would act as the developer account, which can't approve the PRs it authored.
 
 ---
 
@@ -51,10 +48,10 @@ Code review owns these settings under its gate authority ([Tests and gates](07-g
 
 Do it in one window, between trains, in this order:
 
-1. The owner creates the org and installs the AI tool's GitHub app on it.
+1. The owner creates the org, installs the AI tool's GitHub app on it, creates the two machine accounts and the `Verifiers` team.
 2. Process changes that name the new identities merge first (the Saturday window).
 3. The owner transfers the repositories. GitHub moves issues, PRs, wiki, secrets and deploy keys, and redirects old links and git remotes.
-4. Dev process merges one PR that rewrites every `owner/repo` the project names itself: reusable workflow `uses:` lines, checkouts of the playbook, `.playbook.toml`, and script defaults. Redirects aren't documented for Actions `uses:`, so nothing relies on them.
+4. Code review merges one PR that rewrites every `owner/repo` the project names itself: reusable workflow `uses:` lines, checkouts of the playbook, `.playbook.toml`, and script defaults. Redirects aren't documented for Actions `uses:`, so nothing relies on them.
 5. Dev process re-registers self-hosted runners at the org level and watches the first train.
-6. The owner swaps the workspace's repository list to the new names.
-7. The owner creates the role apps; Code review posts its check unrequired for a day, then turns the ruleset on.
+6. The owner swaps the workspace's repository list to the new names and reconnects the build side's AI account to GitHub as the developer account.
+7. When the review side's AI account connects as the verifier, Code review turns the ruleset on after the first verifier approval lands.

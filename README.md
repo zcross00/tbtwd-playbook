@@ -32,7 +32,7 @@ This playbook was extracted from a live project: a single-player game built end 
 | 8 | [Estimating and forecasting](playbook/08-estimating.md) | Sizes, units, honest due dates |
 | 9 | [Cadences](playbook/09-cadences.md) | Daily review, morning report, nightly main, weekly usage report and retro |
 | 10 | [Adopting the playbook](playbook/10-adopting.md) | Day-one setup, the enforcement kit, scaling to an enterprise |
-| 12 | [GitHub identities](playbook/12-identities.md) | Gate roles as GitHub Apps, the Code review check a ruleset requires, moving repos into an organization |
+| 12 | [GitHub identities](playbook/12-identities.md) | Owner, developer and verifier accounts; the review gate a ruleset enforces; moving repos into an organization |
 
 Agents start at [AGENTS.md](AGENTS.md).
 

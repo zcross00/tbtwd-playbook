@@ -24,7 +24,6 @@ Extracted from the reference project, where each tool was built for a failure it
 | | `week.sh` | The week's build churn: queue wait, CI wall time, re-merges of main |
 | | `replay.py` | Replays merged PRs pairwise and sorts their conflicts by cause |
 | `releases/` | `release_notes.py` | Links each playtest pre-release to its milestone, issues and commit; marks older builds superseded |
-| `app/` | `token.sh` | Turns a role app's private key into a one-hour installation token ([GitHub identities](../playbook/12-identities.md)) |
 | `review/` | `scan.py` | Picks and flags the day's backlog review ([Cadences](../playbook/09-cadences.md)) |
 | `usage/` | `pace.py`, `pc_hours.py`, `usage_report.py` | The weekly usage report: pace against the reset, self-hosted runner hours, cost by area |
 | `lib/` | `playbook_config.py`, `config.sh` | Reads `.playbook.toml` for the Python and shell tools |

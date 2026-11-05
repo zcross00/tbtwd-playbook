@@ -2,7 +2,7 @@
 
 ## 2.5 (merges in the Saturday window)
 
-- New page, GitHub identities: the project lives in an organization; Code review, Verification and Dev process act as GitHub Apps; Code review's verdict is a `code-review` check that a ruleset on `main` requires from its app; a second crew is one machine account with Write. Includes the order for moving a personal repository into an organization, and `kit/app/token.sh` for app tokens (GitHub identities; kit).
+- New page, GitHub identities: the project lives in an organization with three accounts. The owner's account is the owner's alone; a developer machine account (build side: coordinator, work threads, Dev process) and a verifier machine account (review side: Code review, Verification), each held by a different AI account. A ruleset on `main` requires one approval from team `Verifiers`. With two crews, the second AI account is the review side. Includes the order for moving a personal repository into an organization (GitHub identities).
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
