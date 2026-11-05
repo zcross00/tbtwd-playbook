@@ -2,7 +2,7 @@
 
 ## 2.5 (merges in the Saturday window)
 
-- New page, GitHub identities: the project lives in an organization. The build side (coordinator, work threads, Dev process) keeps acting as the owner; the review side (Code review, Verification) acts as a verifier machine account held by a different AI account. A ruleset on `main` requires one approval from team `Verifiers` and has no bypass list. With two crews, the second AI account is the review side. Includes the order for moving a personal repository into an organization (GitHub identities).
+- New page, GitHub identities: the project lives in an organization, and building and reviewing use two GitHub logins held by two AI accounts. The review side (coordinator, grooming, Code review, Verification) acts as the owner and writes no code; the build side (work threads, Dev process) acts as a developer machine account. A ruleset on `main` requires one approval from team `Verifiers` (the owner only) and has no bypass list. With two crews, the home crew is the review side and the added crew the build side. Includes the order for moving a personal repository into an organization (GitHub identities).
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
