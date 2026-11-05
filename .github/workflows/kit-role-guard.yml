@@ -1,0 +1,46 @@
+name: kit-role-guard
+
+# Holds agents to their thread's role (playbook/12-identities.md): kit/roles/guard.py
+# dismisses an agent approval without the inquisitor stamp, reopens an issue an
+# agent closed without an inquisitor note, and labels an agent-opened issue
+# without an overseer or inquisitor stamp. The caller runs on
+# `issues: [opened, closed]` and `pull_request_review: [submitted]`, and needs
+# `issues: write` and `pull-requests: write`.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: The runner labels, as JSON
+        type: string
+        default: '["ubuntu-latest"]'
+      playbook-repo:
+        type: string
+        default: zcross00/tbtwd-playbook
+      playbook-ref:
+        type: string
+        default: main
+
+jobs:
+  guard:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .playbook.toml
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.playbook-repo }}
+          ref: ${{ inputs.playbook-ref }}
+          path: .playbook
+          sparse-checkout: |
+            kit
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - uses: ./.playbook/.github/actions/kit-run
+        with:
+          script: roles/guard.py
+        env:
+          GH_TOKEN: ${{ github.token }}

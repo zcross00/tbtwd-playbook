@@ -1,44 +1,58 @@
-# 12. GitHub identities
+# 12. Roles and GitHub identities
 
-When every agent acts on GitHub as the owner, through the owner's AI tool, every gate is a promise: GitHub can't tell Code review from a work thread. This page gives each AI account its own GitHub login and makes every PR need an approval from the *other* login, so GitHub itself enforces review.
+Every thread has one of three roles, and the role decides what it may do on GitHub. The rule is written here, stamped on every post, and checked by a workflow, so it works the same in any AI account that follows this playbook. GitHub itself enforces the one wall it can: no PR merges without an approval from a different login than its author's.
 
 ---
 
-## Two logins, cross-review
+## Three roles
 
-The project lives in an organization that the owner's personal account owns, on a plan that enforces rulesets on private repositories (GitHub Team or above).
+A thread is given its role when it starts, on the first line of its instructions (`Role: overseer`, `Role: architect` or `Role: inquisitor`), and keeps it for its life. If nobody said, it is an architect.
 
-| AI account | GitHub login | Org role |
+| Role | Playbook roles ([Roles](02-roles.md)) | May do on GitHub | Never does |
+|---|---|---|---|
+| **Overseer** (planner) | Coordinator, daily backlog review, grooming, retro, Dev process's planning | Create, edit, label, milestone, move and park issues and milestones; the board | Write code, approve, close issues |
+| **Architect** (developer) | Work threads, Dev process's tooling changes | Push branches, open and update PRs, comment, set `board: status=` on its own issues | Create or move work items, approve, close issues |
+| **Inquisitor** (reviewer, verifier) | Code review, Verification | Review, approve, merge, close issues and milestones, file correction issues | Write code, groom, move work items |
+
+- **An architect who finds new work** writes it into the grooming requests file (or a PR comment); an overseer files the issue.
+- **Every GitHub post an agent makes starts with its role line,** `Role: <role>`, above the text. It is what the guard and the retro read.
+
+---
+
+## The guard
+
+The `kit-role-guard` workflow (`kit/roles/guard.py`) runs on every issue opened or closed and every review submitted. It touches only agent actions (made through the AI tool's app, or carrying its footer); the owner's own actions and workflow bots are left alone.
+
+| Agent action | Allowed when | Otherwise |
 |---|---|---|
-| The owner's | The **owner's** account, as today | Owner; member of team `Verifiers` |
-| A second one | A **developer** machine account | Member, Write; member of team `Verifiers` |
+| Approving review | Stamped `Role: inquisitor` | Dismissed |
+| Closing an issue | An inquisitor comment (the verification note) came first | Reopened |
+| Opening an issue | Stamped `Role: overseer` or `Role: inquisitor` | Kept, labelled |
 
-- **Each AI account connects to exactly one GitHub account.** Either can build: branches, PRs, comments, and creating, moving and editing issues, labels, milestones and the board. Work can tilt either way mid-project without changing anything here.
-- **GitHub never lets an author approve their own PR.** With both logins in `Verifiers` and one approval required, a PR built in one AI account merges only after the other approves it.
-- **Each AI account runs a Code review thread that reviews only the other's PRs.** The home crew's Code review keeps gate authority and owns the ruleset; the other applies this playbook as written.
-- The owner creates and owns the developer account, with an address on the company domain and two-factor authentication on. It is the owner's one free machine account under GitHub's terms.
-- The owner can approve the developer's PRs by hand. PRs posted as the owner need the other AI account's approval.
-- Decision answers keep telling the owner apart from agents by the AI tool's app marker, as before ([Tracking work](03-tracking.md)).
+Every correction labels the item `role-violation` with the reason, and the retro reviews the label weekly. Board moves and milestone changes can't be stamped, so they are reviewed at retro from the issue history, not guarded.
 
 ---
 
-## The gate on `main`
+## GitHub identities
 
-A ruleset on the default branch:
+**An AI account connects to exactly one GitHub login, and every thread in it acts as that login.** In cloud sessions the egress proxy replaces any token a thread supplies with the account's own connection, so a thread can't switch logins. Roles are therefore a process rule plus the guard, not separate GitHub permissions.
 
-- Requires a pull request, with 1 approval from team `Verifiers` (the Required reviewers rule).
-- Dismisses stale approvals when new commits are pushed.
-- Requires the train's CI check.
-- Blocks force pushes and deletion.
-- Has **no bypass list**. Agents act as the owner, so an owner bypass would be theirs too.
+| AI account | GitHub login |
+|---|---|
+| The owner's | The owner's own account |
+| A second one | A machine account (Write), created and owned by the owner, with two-factor authentication, on a paid plan if it isn't the owner's one free machine account |
 
-**When one AI account can't review** (out of budget, or not connected yet), the other's PRs can't merge. Code review then turns the ruleset off and files a `deferred gate` issue ([Tests and gates](07-gates.md)), and turns it back on when both accounts review again. Code review owns these settings under its gate authority and may change them without asking the owner, like any other gate.
+- Both logins are in team `Verifiers`. The ruleset on `main` requires 1 approval from `Verifiers`, dismisses stale approvals, requires the train's CI check, blocks force pushes and deletion, and has **no bypass list** (agents act as the owner, so an owner bypass would be theirs too).
+- GitHub never lets an author approve their own PR, so **every PR needs an inquisitor in the other AI account** to approve it: cross-review. Each AI account runs at least one inquisitor.
+- When one AI account can't review (out of budget, not connected yet), Code review turns the ruleset off under a `deferred gate` issue ([Tests and gates](07-gates.md)) and back on when both review again. Code review owns these settings under its gate authority.
+- A third login (one per role) helps only where threads run on a machine with their own credentials, such as Remote Control sessions on a CI server with one `gh` login per role. That is optional and slow; adopt it only if the retro shows the guard isn't enough.
+- Decision answers keep telling the owner apart from agents by the app marker and footer, as before ([Tracking work](03-tracking.md)).
 
 ---
 
 ## How this sits with two crews
 
-The two crews of [Two crews](11-crews.md) are the two AI accounts. Either crew may build; each crew's Code review thread reviews the other crew's PRs; everything else that is single in the home crew stays single. The crews still talk only through the tracker.
+Each crew of [Two crews](11-crews.md) may run threads of any role. Each crew runs an inquisitor that reviews the other crew's PRs. What is single in the home crew stays single.
 
 ---
 
@@ -46,10 +60,10 @@ The two crews of [Two crews](11-crews.md) are the two AI accounts. Either crew m
 
 Do it in one window, between trains, in this order:
 
-1. The owner creates the org, installs the AI tool's GitHub app on it, creates the developer account, sets the members' base permission to Write, and creates team `Verifiers` with both logins.
+1. The owner creates the org, installs the AI tool's GitHub app on it, creates the machine account as a Member (not an owner, who could turn the ruleset off), sets the base permission to Write, and creates team `Verifiers` with both logins.
 2. Process changes that name the new identities merge first (the Saturday window).
 3. The owner transfers the repositories. GitHub moves issues, PRs, wiki, secrets and deploy keys, and redirects old links and git remotes.
-4. Code review merges one PR that rewrites every `owner/repo` the project names itself: reusable workflow `uses:` lines, checkouts of the playbook, `.playbook.toml`, and script defaults. Redirects aren't documented for Actions `uses:`, so nothing relies on them.
+4. Code review merges one PR that rewrites every `owner/repo` the project names itself: reusable workflow `uses:` lines, checkouts of the playbook, `.playbook.toml`, and script defaults. Redirects aren't documented for Actions `uses:`, so nothing relies on them. The same PR adds the `kit-role-guard` caller.
 5. Dev process re-registers self-hosted runners at the org level and watches the first train.
 6. The owner swaps the workspace's repository list to the new names.
-7. When the second AI account connects as the developer and both Code review threads have approved one of the other's PRs, Code review turns the ruleset on.
+7. When the second AI account connects and each account's inquisitor has approved one of the other's PRs, Code review turns the ruleset on.
