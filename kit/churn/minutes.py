@@ -159,7 +159,7 @@ def main():
                                  f"created=%3E%3D{first}" + (f"&event={event}" if event else ""))]
     hosted_runs += overflow_runs(str(first))
     sent = {r["id"] for r in hosted_runs}
-    day_runs = [r for d in days for r in runs(f"repos/{REPO}/actions/runs", f"created={d}")]
+    day_runs = [r for d in days for h in range(0, 24, 3) for r in runs(f"repos/{REPO}/actions/runs", f"created={d}T{h:02d}:00:00Z..{d}T{h + 2:02d}:59:59Z")]
     others = [r for r in day_runs if source(r) is None and r["id"] not in sent]
     with concurrent.futures.ThreadPoolExecutor(16) as pool:
         jobs = [j for js in pool.map(hosted_jobs, hosted_runs) for j in js]
