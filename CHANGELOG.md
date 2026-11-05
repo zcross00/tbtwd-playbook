@@ -2,7 +2,7 @@
 
 ## 2.4 (merges in the Saturday window)
 
-- New page, Two crews on one repository: a second AI account is the review side (Code review and Verification only, as the verifier identity); the first account is the build side (coordinator, work threads, Dev process), posting through the owner's account as before. Each role exists once; the crews talk only through the tracker; the review side's spare budget buys review depth, never lanes (Two crews; Roles; AGENTS.md).
+- New page, Two crews on one repository: a second AI account is the build crew (work threads and Dev process, as a developer machine account); the home crew (the owner's account) keeps the coordinator, grooming, Code review and Verification and writes no code. Each role exists once; the crews talk only through the tracker; building moves over only once the build crew connects (Two crews; Roles; AGENTS.md).
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 

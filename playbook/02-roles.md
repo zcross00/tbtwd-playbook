@@ -37,7 +37,7 @@ Optional cross-cutting roles the reference project added when it needed them: a 
 - **No arbitrary cap on threads.** The coordinator opens more lanes whenever capacity (budget, CI, review throughput) is under pace, without asking. The real limit is usually CI throughput, not threads.
 - **A thread ends** when its last issue is verified and its acceptance build is handed over. A failed acceptance reopens a thread for that milestone ahead of any new one.
 - **Priority lanes.** When the owner names a primary focus, freed lanes go to it first.
-- **A second crew** (a second AI account) is the review side: it runs Code review and Verification, and the first account runs everything else. No role is copied ([Two crews](11-crews.md)).
+- **A second crew** (a second AI account) is the build crew: work threads and Dev process. The home crew keeps the coordinator, grooming, Code review and Verification. No role is copied ([Two crews](11-crews.md)).
 
 ---
 

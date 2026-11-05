@@ -6,7 +6,7 @@ Read this before any non-trivial task on a project that follows the TBTWD Playbo
 
 ## Your first five minutes
 
-1. **Know your role.** You were started as one of: coordinator, work thread, Code review, Verification, Dev process ([Roles](playbook/02-roles.md)). If nobody said, you are a work thread. Your role doesn't change during the session. If the project runs two crews, know which side you are on: the review side runs only Code review and Verification ([Two crews](playbook/11-crews.md)).
+1. **Know your role.** You were started as one of: coordinator, work thread, Code review, Verification, Dev process ([Roles](playbook/02-roles.md)). If nobody said, you are a work thread. Your role doesn't change during the session. If the project runs two crews, know which crew you are in: the home crew coordinates, reviews and verifies and writes no code; the build crew builds ([Two crews](playbook/11-crews.md)).
 2. **Know your work.** A work thread has one milestone (or one issue) and one branch. Read the milestone's description and its issues before writing code.
 3. **Read the project's PROCESS.md.** It holds the project-specific parts: area table, labels, CI commands, where the owner reads.
 4. **Read the decision log** for anything your work touches. Decided items are not reopened without a new reason.
