@@ -117,7 +117,7 @@ def main():
             api("PUT", f"{pr['url']}/reviews/{event['review']['id']}/dismissals",
                 {"message": "Role guard: " + act[1]})
             flag(pr["issue_url"], act[1])
-    if name in ("pull_request", "pull_request_review"):
+    if name in ("pull_request", "pull_request_target", "pull_request_review"):
         pr = event["pull_request"]
         head = pr["head"]["sha"]
         reviews = api("GET", pr["url"] + "/reviews?per_page=100") or []
