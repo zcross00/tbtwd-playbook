@@ -10,14 +10,15 @@ The two crews are the **build side** and the **review side**. Both follow this p
 
 | Crew | Runs | GitHub identity ([GitHub identities](12-identities.md)) |
 |---|---|---|
-| **Build side** | Coordinator, every work thread, Dev process, the daily backlog review, the retro | The developer account |
+| **Build side** | Coordinator, every work thread, Dev process, the daily backlog review, the retro | The owner's account, which the agents post through as today |
 | **Review side** | Code review and Verification, and nothing else | The verifier account |
 
 - **Each role exists once.** One coordinator, one Code review running one train at a time, one Verification, one Dev process. Splitting the roles across two accounts doesn't copy them.
+- **Only the review side holds the verifier's login.** The build side keeps creating, moving and adjusting work items and posting as the owner. It can't approve: GitHub doesn't count an author's own approval, and the owner's account isn't in the reviewer team.
 - **The review side never builds.** A work thread in the review side's account would hold the verifier's login and could approve its own work, so the gate would be a promise again.
 - **The owner's channel is the build side's coordinator.** The review side doesn't ask the owner anything. Its calls are its own (merging, closing, gate statistics), and anything that needs the owner goes on the tracker as an issue for the coordinator to pick up.
 
-*Why:* the owner, 2026-11-05: "i'm hoping to have myself, with a "planner" role, a developer account with a developer role access, and a verifier account with validation/review access". The roles that merge and close are the ones worth separating, so they get the separate identity.
+*Why:* the owner, 2026-11-05: "i'm hoping to have myself, with a "planner" role, a developer account with a developer role access, and a verifier account with validation/review access". And 2026-11-05: "i still want agents to still be able to create, move, adjust work items in github, same as today, they can still post on my behalf". The roles that merge and close are the ones worth separating, so they get the separate identity.
 
 ---
 
