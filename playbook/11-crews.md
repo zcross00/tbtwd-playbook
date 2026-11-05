@@ -17,7 +17,7 @@ Either crew may build. Each acts on GitHub as its own login ([GitHub identities]
 | Reviews | The added crew's PRs | The home crew's PRs, and every train |
 | Also runs | Coordinator, grooming approval, the daily backlog review, Verification, Dev process, the retro | Its coordinator |
 
-- **Cross-review.** Both logins are in the reviewer team, and an author can't approve their own PR, so every PR needs the other crew's approval. Each crew runs a Code review thread that reviews only the other crew's PRs.
+- **Cross-review.** Both logins are in the reviewer team, and an author can't approve their own PR, so every PR needs the other crew's approval. Each crew runs a Code review thread (its inquisitor, in [GitHub identities](12-identities.md)) that reviews only the other crew's PRs.
 - **One merge queue.** The home crew's Code review runs the trains and merges, one train at a time, and keeps gate authority (seeds, floors, loosening). Because it authors the train PRs, the added crew's Code review approves each train: the members are the approved heads, and nothing else rode along.
 - **Everything else stays single, in the home crew**: Verification, Dev process, grooming approval, the backlog review, the retro, and the owner's channel.
 - **When one side can't review** (out of budget, or not connected yet), the home crew's Code review turns the ruleset off and files a `deferred gate` issue saying why and until when. It turns the ruleset back on when both sides can review.
