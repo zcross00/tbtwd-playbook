@@ -1,45 +1,23 @@
 # 11. Two crews on one repository
 
-A **crew** is one complete agent structure: a coordinator and its work threads, in one workspace, under one budget. A project adds a second crew when one crew's budget is the limit and CI has room for more merges. The crews can't read each other's chats, files or memory, so the repository's tracker is the only place they meet. Every rule below works through it.
+A **crew** is one complete agent structure: its sessions, in one workspace, under one AI account and one budget. A project adds a second crew when it wants the review gate held by a different identity from the builders, or when one account's budget is the limit and CI has room for more merges. The crews can't read each other's chats, files or memory, so the repository's tracker is the only place they meet. Every rule below works through it.
 
-The **home crew** is the one the project started with. The second crew is the **added crew**. Both follow this playbook's `main`, and nothing else.
-
----
-
-## What stays single
-
-These exist once for the whole project, in the home crew, whatever the number of crews:
-
-| Single thing | Why one |
-|---|---|
-| **Owner** | One direction. Both coordinators protect the same person's time |
-| **Roadmap and grooming approval** | The home coordinator approves grooming and gives each milestone to a crew. Two approvers would grow two roadmaps |
-| **Code review** | One merge queue, one train at a time, one gate authority. Both crews' PRs ride the same trains |
-| **Verification** | Closing reads `main`, which is one tree |
-| **Dev process** | One CI, one queue, one board, one weekly usage report covering both budgets |
-| **Daily backlog review and retro** | One backlog, one process |
-
-The added crew has a coordinator and work threads only. It never merges, closes, or approves grooming.
-
-*Why:* every single gate above already ran at its limit with one crew. Copying a gate into the second crew would give two answers to the same PR.
+The two crews are the **build side** and the **review side**. Both follow this playbook's `main`, and nothing else.
 
 ---
 
-## Splitting the work: by milestone
+## Who does what
 
-- **A milestone belongs to one crew.** Its description carries a `Crew:` line (`home` or `added`), set by the home coordinator when it approves the grooming. A crew starts work only on milestones that name it.
-- **Split by milestone, not by file.** Two crews can touch the same file; [Working in parallel](05-parallel.md) already makes that mechanical. A file split would block features that cross areas.
-- **The owner's primary focus stays with the home crew**, and the added crew takes whole milestones beside it: a release milestone, an internal milestone, or the next milestone in the roadmap that doesn't depend on open work.
-- **Moving a milestone between crews** is a `Crew:` line change by the home coordinator, at a boundary (before its thread starts, or after its last PR merges). Never mid-PR.
-- **No crew-to-crew dependency inside a milestone.** If a milestone needs another crew's unmerged work, it waits or moves crews. Dependency order is a roadmap rule, not a chat.
+| Crew | Runs | GitHub identity ([GitHub identities](12-identities.md)) |
+|---|---|---|
+| **Build side** | Coordinator, every work thread, Dev process, the daily backlog review, the retro | The developer account |
+| **Review side** | Code review and Verification, and nothing else | The verifier account |
 
----
+- **Each role exists once.** One coordinator, one Code review running one train at a time, one Verification, one Dev process. Splitting the roles across two accounts doesn't copy them.
+- **The review side never builds.** A work thread in the review side's account would hold the verifier's login and could approve its own work, so the gate would be a promise again.
+- **The owner's channel is the build side's coordinator.** The review side doesn't ask the owner anything. Its calls are its own (merging, closing, gate statistics), and anything that needs the owner goes on the tracker as an issue for the coordinator to pick up.
 
-## Claiming an issue
-
-An issue is claimed by its milestone's crew. Within that crew, its thread claims it with a `board: status=In progress` line, as today. A thread that finds an issue in progress under another milestone, or in a milestone that doesn't name its crew, leaves it alone.
-
-New issues found mid-build are filed with no milestone and go through the home crew's grooming, like any other.
+*Why:* the owner, 2026-11-05: "i'm hoping to have myself, with a "planner" role, a developer account with a developer role access, and a verifier account with validation/review access". The roles that merge and close are the ones worth separating, so they get the separate identity.
 
 ---
 
@@ -47,44 +25,30 @@ New issues found mid-build are filed with no milestone and go through the home c
 
 The crews can't message each other. Everything they say to each other goes on the tracker, where both can read it:
 
-- **A PR is the added crew's request to merge.** Ready means not a draft, rebased, green on the full local check, and mergeable ([Lifecycle](04-lifecycle.md)). Code review picks ready PRs from the tracker; it doesn't wait for a message.
-- **Code review talks back on the PR.** The added crew's thread follows its own PR's activity, so a review comment or a train failure reaches it.
-- **Corrections from Verification** are issues in the original milestone, so they land with the crew that owns it.
-- **A blocker for the home crew** (a broken check, a needed dependency) is an issue with `priority: A`, mentioned in the PR, never a message.
-
----
-
-## The owner's channel
-
-The owner reads two chats, so each one stays small:
-
-- **The home coordinator** is the channel for direction, roadmap, scope, dates and anything that crosses crews.
-- **The added coordinator** asks the owner only about its own milestones (spec choices, and the acceptance build when one is ready), with a recommendation, once.
-- **Acceptance builds go through one queue**, with the home coordinator, so the owner sees one list of what's waiting to be played, oldest first.
-
-*Why:* the owner's attention is the scarcest resource ([Principles](01-principles.md)). A second crew doubles the work arriving at it; it must not double the places to look.
+- **A ready PR is the build side's request to merge.** Ready means not a draft, rebased, green on the full local check, and mergeable ([Lifecycle](04-lifecycle.md)). Code review picks ready PRs from the tracker; it doesn't wait for a message.
+- **Code review talks back on the PR**: a review, a requested change, a train result. The thread that owns the PR follows its activity, so the answer reaches it.
+- **Verification talks back on the issue**: a close, or a reopen with its priority A correction in the original milestone.
+- **Gate calls** (loosening, seeds, floors) are written on the PR or the `deferred gate` issue, as now. The build side reads them there.
+- **A blocker for the other crew** is an issue with `priority: A`, linked from the PR, never a message.
+- **Morning report and retro inputs** from the review side (trains run, merges, verification fails) are read from the tracker by the build side's coordinator and Dev process, not reported by chat.
 
 ---
 
 ## Budgets
 
-Each crew paces against its own budget with the same pace tool and the same reset. Each coordinator opens or idles its own lanes. The added crew posts its readings where Dev process can read them (a standing internal issue, one comment per reading), and the weekly usage report covers both crews.
+Each crew paces against its own account's budget with the same pace tool. The review side's coordinator duties are none, so its spend is review and verification only, and most of its budget is spare.
 
-Opening more lanes than CI can merge spends budget on work that waits in the queue. Before the added crew opens a lane, its coordinator checks the queue wait; Dev process gives both coordinators the same number.
-
----
-
-## CI with two crews
-
-Both crews share one merge queue on the shared runners ([CI tiers](06-ci.md)). A second crew is worth adding only when CI can take its merges: in practice, a Tier 1 server with a measured full run, not a Tier 0 laptop that is already the limit.
+- **Moving review off the build side's account** frees that share of its budget for more work threads.
+- **The review side's spare budget buys depth, not more lanes.** It can review at higher effort, run the acceptance build and play its first minutes headless before the owner does, and re-check verified issues against `main` more often. It never builds.
+- **The weekly usage report covers both accounts.** The review side posts its readings where Dev process can read them: a standing internal issue, one comment per reading.
 
 ---
 
-## Starting the added crew
+## Starting the review side
 
-1. **Measure CI first.** Start the added crew only after the shared runners' first measured full run shows room in the queue.
-2. **Give it the same repositories and instructions.** Its workspace connects the project repository and this playbook; its standing instructions are the home crew's, word for word, plus one line saying it is the added crew.
-3. **Give it GitHub access** with permission to push branches and open PRs, nothing more. Merging stays with Code review's access.
-4. **Hand it its first milestones** by setting their `Crew: added` lines, and start one thread per milestone.
+1. **Connect it as the verifier.** Its workspace connects the project repository and this playbook, with GitHub access as the verifier account only ([GitHub identities](12-identities.md)).
+2. **Give it the same standing instructions**, word for word, plus one line saying it is the review side and runs only Code review and Verification.
+3. **Start Code review and Verification there, then stop them on the build side.** Never both at once: two Code reviews would run two trains.
+4. **Turn on the ruleset** after the first verifier approval lands ([GitHub identities](12-identities.md)).
 5. **Create the standing internal issue** for its budget readings.
-6. **Review it at the first retro** after it starts: merges per crew, queue wait, conflicts between crews, and the owner's load.
+6. **Review it at the first retro** after it starts: merges per day, time from ready to merged, verification fails, and whether the build side opened more lanes with the freed budget.

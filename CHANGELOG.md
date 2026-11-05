@@ -2,7 +2,7 @@
 
 ## 2.4 (merges in the Saturday window)
 
-- New page, Two crews on one repository: a second agent structure (coordinator, threads, budget) beside the first. Code review, Verification, Dev process, grooming approval and the owner's roadmap channel stay single in the home crew; milestones carry a `Crew:` line; the crews talk only through the tracker; the added crew starts only after CI measures room for it (Two crews; Roles; AGENTS.md).
+- New page, Two crews on one repository: a second AI account is the review side (Code review and Verification only, as the verifier identity); the first account is the build side (coordinator, work threads, Dev process). Each role exists once; the crews talk only through the tracker; the review side's spare budget buys review depth, never lanes (Two crews; Roles; AGENTS.md).
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 

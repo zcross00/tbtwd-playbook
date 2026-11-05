@@ -32,7 +32,7 @@ This playbook was extracted from a live project: a single-player game built end 
 | 8 | [Estimating and forecasting](playbook/08-estimating.md) | Sizes, units, honest due dates |
 | 9 | [Cadences](playbook/09-cadences.md) | Daily review, morning report, nightly main, weekly usage report and retro |
 | 10 | [Adopting the playbook](playbook/10-adopting.md) | Day-one setup, the enforcement kit, scaling to an enterprise |
-| 11 | [Two crews on one repository](playbook/11-crews.md) | A second agent structure beside the first: what stays single, splitting by milestone, talking through the tracker |
+| 11 | [Two crews on one repository](playbook/11-crews.md) | A second agent account as the review side: who runs what, talking through the tracker, budgets |
 
 Agents start at [AGENTS.md](AGENTS.md).
 
