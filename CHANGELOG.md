@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- The daily backlog review picks every ungroomed open issue, oldest first, parked included, with no cap, instead of the 50 least recently reviewed non-parked issues (Cadences; `kit/review/scan.py`).
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
