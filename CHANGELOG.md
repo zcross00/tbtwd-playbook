@@ -2,7 +2,7 @@
 
 ## 2.4 (merges in the Saturday window)
 
-- New page, Two crews on one repository: a second AI account is the build crew (work threads and Dev process, as a developer machine account); the home crew (the owner's account) keeps the coordinator, grooming, Code review and Verification and writes no code. Each role exists once; the crews talk only through the tracker; building moves over only once the build crew connects (Two crews; Roles; AGENTS.md).
+- New page, Two crews on one repository: a second AI account beside the first. Either crew builds the milestones whose `Crew:` line names it; each crew's Code review approves only the other's PRs (cross-review, so no login passes its own work); the home crew keeps the trains, gate authority, Verification, Dev process, grooming approval and the owner's channel. The crews talk only through the tracker (Two crews; Roles; AGENTS.md).
 
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
