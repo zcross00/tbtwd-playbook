@@ -8,7 +8,8 @@ REVIEW_STAMPS names the JSON file of last review dates (default
 ./last-reviewed.json); keep it outside the repo, so a review fires no workflow.
 
 Picks, in this order:
-  1. up to 50 non-parked open issues, least recently reviewed first (last-reviewed.json, then updated_at);
+  1. every ungroomed open issue, oldest first, parked included, with no cap: one with no milestone,
+     never reviewed, or updated since its last review (last-reviewed.json);
   2. every issue whose newest board status is In review for more than 24 hours;
   3. every open decision issue (label `decision` or wiki.needs_owner_label);
   4. every open milestone past its 50% date (from the "50% Mon D" in its description).
@@ -62,9 +63,12 @@ i_body = {i['number']: i['body'] or '' for i in issues}
 milestones = api('milestones?state=open&per_page=100')
 due = {m['number']: (m['due_on'] or '-')[:10] for m in milestones}
 
-nonparked = [i for i in issues if 'parked' not in labels(i)]
-nonparked.sort(key=lambda i: (stamps.get(str(i['number']), ''), i['updated_at']))
-picked = nonparked[:50]
+def ungroomed(i):
+    stamp = stamps.get(str(i['number']), '')
+    return i['milestone'] is None or not stamp or stamp < i['updated_at'][:10]
+
+issues.sort(key=lambda i: i['created_at'])
+picked = [i for i in issues if ungroomed(i)]
 json.dump([i['number'] for i in picked], open(f'{out}/picked.json', 'w'))
 json.dump(picked, open(f'{out}/list.json', 'w'))
 
@@ -82,7 +86,7 @@ def board_of(n):
 
 print('== 1. non-parked, least recently reviewed (reviewed / updated / ms due / status est day / flags | title)')
 in_review = []
-for i in nonparked:
+for i in issues:
     n = i['number']
     board, status_at, c = board_of(n)
     st = board.get('status', '-')

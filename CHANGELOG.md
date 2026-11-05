@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4 (merges in the Saturday window)
+
+- The daily backlog review picks every ungroomed open issue, oldest first, parked included, with no cap, instead of the 50 least recently reviewed non-parked issues (Cadences; `kit/review/scan.py`).
+- An issue leaves every milestone only when it truly won't be in the MVP, which is the owner's call. Blocked work moves to the milestone that holds what it waits on, or to a new one with an estimate, and its dates are re-measured (Tracking; Cadences step 5).
+
 ## 2.3.1 (2026-11-02, owner declared it urgent)
 
 - License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.

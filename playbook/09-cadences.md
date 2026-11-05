@@ -22,14 +22,14 @@ Leads with anything red (a red night, an AT RISK committed milestone, a blocked 
 
 ## Daily backlog review
 
-1. **Pick** (by script, so the run is lean): up to 50 open non-parked issues, least recently *reviewed* first; every issue In review for more than 24 hours; every open `decision` issue; every open milestone past its 50% date.
+1. **Pick** (by script, so the run is lean): every ungroomed open issue, oldest first, parked included, with no cap (one with no milestone, never reviewed, or updated since its last review); every issue In review for more than 24 hours; every open `decision` issue; every open milestone past its 50% date.
 2. **Check each issue** for: its ask against the owner's own quoted words or the approved spec; a Check line, an estimate, and a day no later than its milestone's due date; a status that matches what happened; labels; links that open (on `main`, not a branch); whether it's still wanted or a duplicate.
 3. **Fix the routine things** in place (links, labels, missing fields, cross-links). The coordinator approved those in advance.
 4. **Record the review quietly.** No comments on the issues (each one fires workflows and notifications). The script stamps the reviewed issues in a file, so the next run takes the next stalest.
-5. **Send what needs the owner to the coordinator as one list**, each with a recommendation: scope changes, moving issues between milestones, closes, and status calls that belong to another thread.
+5. **Send what needs the owner to the coordinator as one list**, each with a recommendation (a placement is a real milestone; parking is only for work outside the MVP, see [Tracking](03-tracking.md)): scope changes, moving issues between milestones, closes, and status calls that belong to another thread.
 6. **Check the manual inputs**: hand-written pages past their review date, and decisions the owner made in chat that have no `decision` issue yet.
 
-*Why:* picking the 50 stalest *by update time* picked only parked issues and fired a comment on each; picking by *review* time and staying quiet fixed both.
+*Why:* picking the 50 stalest *by update time* picked only parked issues and fired a comment on each; picking by *review* time and staying quiet fixed both. A cap of 50 that skipped parked issues then left the oldest issues ungroomed for weeks, because parked issues were never picked. So the pick has no cap and includes parked issues. A big catch-up run splits the list across helpers, and it stays inside the usage pace.
 
 ---
 
