@@ -17,6 +17,7 @@ Status lives in the issue tracker (GitHub issues plus a Projects board on the re
 ## Milestones
 
 - **No issue is worked until it's in a milestone.** A parked issue has no milestone until it's pulled into one, at a boundary.
+- **Leaving a milestone is only for work outside the MVP.** An issue leaves every milestone (it's parked) only when it truly won't be in the MVP, and that's the owner's call. Work that's blocked, or that waits on other work, moves to the milestone that holds that work, or to a new milestone with an estimate. The dates it touches are then re-measured. Parking to make a date look closer hides the work, and the true date with it.
 - **A milestone is named for what its acceptance test proves**, as a statement the owner can check: "Rich mines pay big, and the shelves never run dry", not "Economy 2". Internal milestones (CI health, coverage, refactors) are named `Internal: …`, have no owner acceptance test, and close on a measured done-when.
 - **Its description** holds the goal, the spec link, the done-when, its dates line, and ends with the acceptance test: setup, what to try, what passes ([templates/milestone.md](../templates/milestone.md)).
 - **A milestone closes only on the owner's acceptance pass.** Every issue verified isn't enough on its own. The owner may pass without playing; that is their call. The acceptance build is prepared ahead of time, so the owner never waits on a build or CI.
