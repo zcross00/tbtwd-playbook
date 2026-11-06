@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6 (merges in the Saturday window)
+
+- Principles: a new rule, The owner signs off on every word a customer reads. Customer-facing copy goes to the owner as plain text, and nothing is generated from it until the owner has signed off on the exact wording; any later change goes back to them.
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
