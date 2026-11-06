@@ -374,6 +374,25 @@ class Poll(unittest.TestCase):
         self.assertFalse(go)
         self.assertIn("1 ahead, first PR #5", why)
 
+    def test_a_run_whose_queue_was_skipped_isnt_ahead(self):
+        stuck = [job("files", "completed", "success"), job("queue", "completed", "skipped"),
+                 job("full runs in a train", "completed", "success", labels=LIGHT)]
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: stuck})
+        go, why = poll(fake, 2)
+        self.assertTrue(go)
+
+    def test_a_run_whose_full_finished_isnt_ahead(self):
+        done = [job("queue", "completed", "success"), job("full", "completed", "success", labels=PC)]
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: done})
+        self.assertTrue(poll(fake, 2)[0])
+
+    def test_a_run_not_yet_at_its_queue_is_still_ahead(self):
+        early = [job("files", "in_progress")]
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: early})
+        go, why = poll(fake, 2)
+        self.assertFalse(go)
+        self.assertIn("1 ahead, first PR #5", why)
+
     def test_priority_a_label_on_the_pr_goes_first(self):
         fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: WAITING},
                     issues={6: (["priority: A"], "")})

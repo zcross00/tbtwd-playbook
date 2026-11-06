@@ -176,6 +176,14 @@ def holds_pc(jobs):
     return queue is None or queue.get("conclusion") == "success"
 
 
+def done_with_pc(jobs):
+    by_name = {j["name"]: j for j in jobs}
+    full, queue = by_name.get("full"), by_name.get("queue")
+    if full is not None and full["status"] == "completed":
+        return True
+    return queue is not None and queue["status"] == "completed" and queue.get("conclusion") != "success"
+
+
 def waiting(jobs):
     """Whether a run is itself still waiting in this script."""
     queue = next((j for j in jobs if j["name"] == "queue"), None)
@@ -443,7 +451,10 @@ class Queue:
             # A run sent to a hosted machine doesn't hold the PC.
             if r["id"] == self.me or r["id"] in hosted:
                 continue
-            (ahead if self.key(r) < my_key else behind).append(r)
+            if self.key(r) >= my_key:
+                behind.append(r)
+            elif not done_with_pc(self.get(f"actions/runs/{r['id']}/jobs?per_page=100")["jobs"]):
+                ahead.append(r)
         if ahead:
             ahead.sort(key=self.key)
             why = self.overflow(mine, ahead)
