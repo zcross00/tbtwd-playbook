@@ -115,6 +115,7 @@ MAX_ERRORS = 10
 # Polls between reads of main's copy of this script.
 SYNC_POLLS = 10
 STUCK_SECS = 15 * 60
+IDLE_EVERY = 5
 # How long a stopped run waits to be cancelled before it fails instead (#1007).
 CANCEL_SECS = 120
 # The playbook's main (public, so any token reads it).
@@ -240,12 +241,22 @@ class Queue:
         # Runs sent to a hosted machine this month, {run id: when}, read once a poll.
         self.sent = None
         self.idle_since = None
+        self.done = set()
+        self.alive_checked = {}
+        self.jobs_cache = {}
+        self.polls = 0
+
+    def jobs_of(self, rid):
+        if rid not in self.jobs_cache:
+            self.jobs_cache[rid] = self.get(f"actions/runs/{rid}/jobs?per_page=100")["jobs"]
+        return self.jobs_cache[rid]
 
     def pc_idle(self, runs):
         queued = self.get(f"actions/workflows/{CI}/runs?status=queued&per_page=100")["workflow_runs"]
-        for r in runs + queued:
-            jobs = self.get(f"actions/runs/{r['id']}/jobs?per_page=100")["jobs"]
-            if holds_pc(jobs):
+        for r in sorted(runs, key=lambda r: r["id"] not in self.jobs_cache) + queued:
+            if r["id"] == self.me or r["id"] in self.done:
+                continue
+            if holds_pc(self.jobs_of(r["id"])):
                 return False
         return True
 
@@ -436,6 +447,8 @@ class Queue:
         self.polled = self.now()
         self.trains = None
         self.sent = None
+        self.jobs_cache = {}
+        self.polls += 1
         runs = self.get(
             f"actions/workflows/{CI}/runs?status=in_progress&per_page=100"
         )["workflow_runs"]
@@ -459,24 +472,27 @@ class Queue:
         ahead, behind = [], []
         for r in runs:
             # A run sent to a hosted machine doesn't hold the PC.
-            if r["id"] == self.me or r["id"] in hosted:
+            if r["id"] == self.me or r["id"] in hosted or r["id"] in self.done:
                 continue
-            if self.key(r) >= my_key:
-                behind.append(r)
-            elif not done_with_pc(self.get(f"actions/runs/{r['id']}/jobs?per_page=100")["jobs"]):
-                ahead.append(r)
+            (ahead if self.key(r) < my_key else behind).append(r)
+        ahead.sort(key=self.key)
+        while ahead and self.alive_checked.get(ahead[0]["id"], -IDLE_EVERY) <= self.polls - IDLE_EVERY:
+            if not done_with_pc(self.jobs_of(ahead[0]["id"])):
+                self.alive_checked[ahead[0]["id"]] = self.polls
+                break
+            self.done.add(ahead.pop(0)["id"])
         if ahead:
-            ahead.sort(key=self.key)
             why = self.overflow(mine, ahead)
             if why:
                 return "hosted", why
             why = f"{len(ahead)} ahead, first {describe(ahead[0])}"
-            if self.pc_idle(runs):
-                self.idle_since = self.idle_since or self.polled
-                if self.polled - self.idle_since >= STUCK_SECS:
-                    return "stuck", f"QUEUE STUCK: {why}, but nothing has held the PC for {int(self.polled - self.idle_since) // 60} minutes"
-            else:
-                self.idle_since = None
+            if self.polls % IDLE_EVERY == 1:
+                if self.pc_idle(runs):
+                    self.idle_since = self.idle_since or self.polled
+                else:
+                    self.idle_since = None
+            if self.idle_since is not None and self.polled - self.idle_since >= STUCK_SECS:
+                return "stuck", f"QUEUE STUCK: {why}, but nothing has held the PC for {int(self.polled - self.idle_since) // 60} minutes"
             return False, why
         # A released run is in progress once its queue job has run, but a run
         # GitHub still lists as queued is read too, in case it holds the PC.
@@ -503,7 +519,7 @@ class Queue:
         for r in behind:
             if r["id"] in self.seen_waiting:
                 continue
-            jobs = self.get(f"actions/runs/{r['id']}/jobs?per_page=100")["jobs"]
+            jobs = self.jobs_of(r["id"])
             if holds_pc(jobs):
                 return False, f"the PC is running {describe(r)}"
             if waiting(jobs):

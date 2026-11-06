@@ -411,12 +411,41 @@ class Poll(unittest.TestCase):
         clock = [q.seconds(t("10:30"))]
         queue = q.Queue(fake.get, 2, now=lambda: clock[0])
         queue.poll()
-        clock[0] += 10 * 60
         fake.jobs[3] = ON_PC
-        queue.poll()
+        for _ in range(q.IDLE_EVERY):
+            clock[0] += 60
+            queue.poll()
         fake.jobs[3] = [job("queue", "completed", "success"), job("full", "completed", "success", labels=PC)]
-        clock[0] += 10 * 60
+        clock[0] += 20 * 60
         self.assertFalse(queue.poll()[0])
+
+    def test_a_ghost_ahead_costs_one_jobs_read_in_all(self):
+        ghost = [job("queue", "completed", "skipped"), job("full runs in a train", "completed", "success", labels=LIGHT)]
+        fake = Fake([run(1, "09:00", 4), run(2, "10:00", 5), run(3, "10:05", 6)], jobs={1: ghost, 2: WAITING})
+        queue = q.Queue(fake.get, 3, now=lambda: q.seconds(t("10:30")))
+        for _ in range(5):
+            queue.poll()
+        self.assertEqual(fake.calls.count("actions/runs/1/jobs?per_page=100"), 1)
+
+    def test_one_poll_reads_each_runs_jobs_at_most_once(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6), run(3, "10:10", 7)], jobs={1: WAITING, 3: WAITING})
+        queue = q.Queue(fake.get, 2, now=lambda: q.seconds(t("10:30")))
+        queue.poll()
+        reads = [c for c in fake.calls if c.endswith("/jobs?per_page=100")]
+        self.assertEqual(len(reads), len(set(reads)))
+
+    def test_a_waiting_run_reads_few_calls_a_poll(self):
+        runs = [run(i, f"09:0{i}", 10 + i) for i in range(1, 7)] + [run(9, "10:00", 5)]
+        fake = Fake(runs, jobs={1: ON_PC})
+        fake.artifacts = []
+        clock = [q.seconds(t("10:30"))]
+        queue = q.Queue(fake.get, 9, now=lambda: clock[0])
+        queue.poll()
+        before = len(fake.calls)
+        for _ in range(10):
+            clock[0] += 60
+            queue.poll()
+        self.assertLessEqual((len(fake.calls) - before) / 10, 3.5)
 
     def test_wait_fails_a_stuck_run(self):
         self.assertEqual(q.wait(lambda: ("stuck", "QUEUE STUCK: test"), sleep=lambda s: None), 1)
