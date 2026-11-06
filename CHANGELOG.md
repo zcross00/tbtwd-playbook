@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5 (merges in the Saturday window)
+
+- CI tiers: a new section, Time budgets. Never raise a timeout to make a run fit; a heavy check has a per-check and pool budget enforced by a test, and one over it moves to the nightly run with a smoke twin; a run that estimates over 85% of its limit doesn't start, and one past 75% warns; a rerun of the same tree skips what already passed; a ready gate too long for one command runs in parts with a summary that proves they cover every check on one tree.
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
