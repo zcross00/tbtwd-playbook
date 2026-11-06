@@ -393,6 +393,34 @@ class Poll(unittest.TestCase):
         self.assertFalse(go)
         self.assertIn("1 ahead, first PR #5", why)
 
+    def test_waiting_behind_a_run_with_the_pc_idle_turns_stuck_after_15_minutes(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: WAITING, 2: WAITING})
+        clock = [q.seconds(t("10:30"))]
+        queue = q.Queue(fake.get, 2, now=lambda: clock[0])
+        self.assertFalse(queue.poll()[0])
+        clock[0] += 14 * 60
+        self.assertFalse(queue.poll()[0])
+        clock[0] += 60
+        go, why = queue.poll()
+        self.assertEqual(go, "stuck")
+        self.assertIn("QUEUE STUCK: 1 ahead, first PR #5", why)
+
+    def test_a_busy_pc_resets_the_stuck_clock(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6), run(3, "09:00", 7)],
+                    jobs={1: WAITING, 2: WAITING, 3: WAITING})
+        clock = [q.seconds(t("10:30"))]
+        queue = q.Queue(fake.get, 2, now=lambda: clock[0])
+        queue.poll()
+        clock[0] += 10 * 60
+        fake.jobs[3] = ON_PC
+        queue.poll()
+        fake.jobs[3] = [job("queue", "completed", "success"), job("full", "completed", "success", labels=PC)]
+        clock[0] += 10 * 60
+        self.assertFalse(queue.poll()[0])
+
+    def test_wait_fails_a_stuck_run(self):
+        self.assertEqual(q.wait(lambda: ("stuck", "QUEUE STUCK: test"), sleep=lambda s: None), 1)
+
     def test_priority_a_label_on_the_pr_goes_first(self):
         fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: WAITING},
                     issues={6: (["priority: A"], "")})

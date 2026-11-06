@@ -114,6 +114,7 @@ PRIORITY_TTL_SECS = 15 * 60
 MAX_ERRORS = 10
 # Polls between reads of main's copy of this script.
 SYNC_POLLS = 10
+STUCK_SECS = 15 * 60
 # How long a stopped run waits to be cancelled before it fails instead (#1007).
 CANCEL_SECS = 120
 # The playbook's main (public, so any token reads it).
@@ -238,6 +239,15 @@ class Queue:
         self.trains = None
         # Runs sent to a hosted machine this month, {run id: when}, read once a poll.
         self.sent = None
+        self.idle_since = None
+
+    def pc_idle(self, runs):
+        queued = self.get(f"actions/workflows/{CI}/runs?status=queued&per_page=100")["workflow_runs"]
+        for r in runs + queued:
+            jobs = self.get(f"actions/runs/{r['id']}/jobs?per_page=100")["jobs"]
+            if holds_pc(jobs):
+                return False
+        return True
 
     def labels(self, number):
         issue = self.get(f"issues/{number}")
@@ -460,7 +470,14 @@ class Queue:
             why = self.overflow(mine, ahead)
             if why:
                 return "hosted", why
-            return False, f"{len(ahead)} ahead, first {describe(ahead[0])}"
+            why = f"{len(ahead)} ahead, first {describe(ahead[0])}"
+            if self.pc_idle(runs):
+                self.idle_since = self.idle_since or self.polled
+                if self.polled - self.idle_since >= STUCK_SECS:
+                    return "stuck", f"QUEUE STUCK: {why}, but nothing has held the PC for {int(self.polled - self.idle_since) // 60} minutes"
+            else:
+                self.idle_since = None
+            return False, why
         # A released run is in progress once its queue job has run, but a run
         # GitHub still lists as queued is read too, in case it holds the PC.
         queued = self.get(
@@ -617,6 +634,13 @@ def wait(poll, sleep=None, cancel=None):
             last = why
         if go is None:
             return stop(why, sleep, cancel)
+        if go == "stuck":
+            print(f"::error title=queue stuck::{why}", flush=True)
+            path = os.environ.get("GITHUB_STEP_SUMMARY")
+            if path:
+                with open(path, "a", encoding="utf-8") as f:
+                    f.write(f"{why}. Cancel the run ahead if it is a ghost, then re-run this one.\n")
+            return 1
         if go and confirming == go:
             if go == "hosted":
                 output("where", "hosted")
