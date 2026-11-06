@@ -447,6 +447,19 @@ class Poll(unittest.TestCase):
             queue.poll()
         self.assertLessEqual((len(fake.calls) - before) / 10, 3.5)
 
+    def test_the_stuck_clock_restarts_once_nothing_is_ahead(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: WAITING, 2: WAITING})
+        clock = [q.seconds(t("10:30"))]
+        queue = q.Queue(fake.get, 2, now=lambda: clock[0])
+        queue.poll()
+        fake.runs = [run(2, "10:05", 6)]
+        clock[0] += 60
+        queue.poll()
+        fake.runs = [run(1, "10:00", 5), run(2, "10:05", 6)]
+        clock[0] += 20 * 60
+        go, why = queue.poll()
+        self.assertNotEqual(go, "stuck")
+
     def test_wait_fails_a_stuck_run(self):
         self.assertEqual(q.wait(lambda: ("stuck", "QUEUE STUCK: test"), sleep=lambda s: None), 1)
 
