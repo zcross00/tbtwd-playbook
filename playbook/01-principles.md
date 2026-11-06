@@ -32,6 +32,18 @@ Projects die by correcting one detail forever. So:
 
 ---
 
+## The owner signs off on every word a customer reads
+
+Words that leave the project for customers, funders, press or the public (store pages, promo and trailer text, pitch decks, capsule and banner text, posts, press notes, emails to people outside the project) go to the owner as plain text first. Nothing is generated from them (no video, image, page, deck or post) until the owner has signed off on that exact wording.
+
+- **Copy first, assets second.** The draft goes through the coordinator as text the owner can read in one pass, with what it's for and where it will appear. Mock-ups and test renders that use placeholder text are fine; a finished asset waits for the sign-off.
+- **The sign-off is on the exact words.** The approved copy is kept verbatim with the owner's yes quoted ([Record the owner's words](#record-the-owners-words-not-a-paraphrase)). Any change to it, even a small one, goes back to the owner before it ships.
+- **This isn't hiding how the work is made.** It's about the words reading like the owner's project, not about concealing that agents helped write them.
+
+*Why:* the reference project's first funding pitch came back with "the text wording is weird and seems AI generated". The owner (2026-11-06): "before generating any promo materials or anything marketing related, I want to sign off on all copy and working used before we generate anything ... not trying to hide AI usage, but anything customer facing should be ran through me before it makes it out".
+
+---
+
 ## Record the owner's words, not a paraphrase
 
 Every decision is recorded with the owner's own words quoted, the question they answered, the date, and a link to where they said it. Paraphrases drift; quotes don't.
