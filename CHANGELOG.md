@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.3 (merges in the Saturday window)
+
+- `kit/queue/pc_queue.py`: the QUEUE STUCK clock restarts whenever nothing is ahead, so a run that falls back behind a live run doesn't trip the alarm at once.
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.

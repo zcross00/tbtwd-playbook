@@ -481,6 +481,8 @@ class Queue:
                 self.alive_checked[ahead[0]["id"]] = self.polls
                 break
             self.done.add(ahead.pop(0)["id"])
+        if not ahead:
+            self.idle_since = None
         if ahead:
             why = self.overflow(mine, ahead)
             if why:
