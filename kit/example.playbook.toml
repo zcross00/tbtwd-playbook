@@ -34,6 +34,23 @@ iteration_fields = ["Day", "Week"]
 "area: progression" = "Progression"
 "area: design" = "Design"
 
+# Each team's sprints, keyed by the team's label. The sync creates `field`
+# (an iteration field) when the board lacks it: `count` iterations of `days`
+# days from `start`, named "<prefix> 1", "<prefix> 2", and so on. `plan` lists
+# each sprint's milestone numbers. An open issue with the label goes in the
+# latest sprint that lists its milestone; a closed one in the latest that
+# lists it and had started by the day it closed.
+[board.team_sprints."team:alpha"]
+field = "Alpha sprint"
+prefix = "Alpha"
+start = "2026-11-07"
+days = 7
+count = 26
+
+[board.team_sprints."team:alpha".plan]
+"1" = [49, 27]
+"2" = [27, 57]
+
 [milestones]
 # The workflow whose scheduled runs on main are the nightly full check.
 nightly_workflow = "ci.yml"

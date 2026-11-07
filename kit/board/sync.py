@@ -11,6 +11,9 @@ onto the board. Threads write lines like these in the issue body or any comment:
     board: day=2026-10-23
 
 `day` sets both iteration fields, Day and Week. For each key the newest line wins (the body counts as oldest). Team always comes from the `area:` label.
+A team's sprint field comes from its team label and the issue's milestone,
+using the plan in `[board.team_sprints]`; no line sets it. The sync creates
+a missing sprint field with its iterations.
 Status falls back to Done for closed issues, and an open issue is never set
 to Done (PROCESS, The lifecycle and the definition of done). Values are thousands of output
 tokens; see PROCESS "Estimating and the daily plan".
@@ -23,6 +26,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib"))
@@ -38,6 +42,8 @@ SKIP_TITLE = "board line skipped"
 ITERATION_FIELDS = tuple(CFG["board"]["iteration_fields"])
 
 AREA_TO_TEAM = CFG["board"]["teams"]
+TEAM_SPRINTS = CFG["board"]["team_sprints"]
+WRITE_PAUSE = 0.5
 BOARD_LINE = re.compile(r"^\s*board:(.*)$", re.MULTILINE | re.IGNORECASE)
 PAIR = re.compile(r"(\w+)=(.+?)(?=\s+\w+=|$)")
 
@@ -106,6 +112,50 @@ def board_values(comments):
     return vals
 
 
+def sprint_for(labels, milestone, closed_on, team_sprints):
+    """The sprint field and the start date of the issue's sprint, or None.
+    `closed_on` is the date it closed, or None while it's open."""
+    for label, team in sorted(team_sprints.items()):
+        if label not in labels or milestone is None:
+            continue
+        start = dt.date.fromisoformat(team["start"])
+        best = None
+        for n, milestones in team.get("plan", {}).items():
+            n = int(n)
+            begins = start + dt.timedelta(days=team["days"] * (n - 1))
+            if milestone in milestones and (closed_on is None or begins <= closed_on):
+                best = max(best or (n, begins), (n, begins))
+        if best:
+            return team["field"], best[1].isoformat()
+    return None
+
+
+def sprint_iterations(team):
+    """The iterations a new sprint field is created with."""
+    start = dt.date.fromisoformat(team["start"])
+    return [{"title": f"{team['prefix']} {n + 1}",
+             "startDate": (start + dt.timedelta(days=team["days"] * n)).isoformat(),
+             "duration": team["days"]} for n in range(team["count"])]
+
+
+def create_sprint_fields(pid, have, apply):
+    """Creates each team's sprint field the board lacks. True if it made one."""
+    made = False
+    for label, team in sorted(TEAM_SPRINTS.items()):
+        if team["field"] in have:
+            continue
+        print(f"create iteration field {team['field']!r} ({team['count']} x {team['days']} days from {team['start']})")
+        made = True
+        if apply:
+            gql("""mutation($p: ID!, $n: String!, $c: ProjectV2IterationFieldConfigurationInput!) {
+                createProjectV2Field(input: {projectId: $p, dataType: ITERATION, name: $n, iterationConfiguration: $c}) {
+                  projectV2Field { ... on ProjectV2IterationField { id } } } }""",
+                p=pid, n=team["field"],
+                c={"startDate": team["start"], "duration": team["days"], "iterations": sprint_iterations(team)})
+            time.sleep(WRITE_PAUSE)
+    return made
+
+
 def project():
     d = gql("""query($login: String!) { user(login: $login) {
         projectsV2(first: 50) { nodes { id title } } } }""", login=OWNER)
@@ -136,6 +186,13 @@ ITEMS = """query($id: ID!, $after: String) { node(id: $id) { ... on ProjectV2 {
 ISSUES = """query($o: String!, $r: String!, $since: DateTime!, $after: String) { repository(owner: $o, name: $r) {
     issues(first: 50, after: $after, filterBy: {since: $since}) { pageInfo { hasNextPage endCursor }
       nodes { id number state body labels(first: 20) { nodes { name } }
+        milestone { number } closedAt
+        comments(last: 50) { nodes { body } } } } } }"""
+
+MILESTONE_ISSUES = """query($o: String!, $r: String!, $m: String!, $after: String) { repository(owner: $o, name: $r) {
+    issues(first: 50, after: $after, filterBy: {milestoneNumber: $m}) { pageInfo { hasNextPage endCursor }
+      nodes { id number state body labels(first: 20) { nodes { name } }
+        milestone { number } closedAt
         comments(last: 50) { nodes { body } } } } } }"""
 
 
@@ -145,6 +202,8 @@ def main():
         sys.exit("BOARD_TOKEN isn't set (a classic PAT with `project` scope)")
     pid = project()
     f = fields(pid)
+    if create_sprint_fields(pid, f, apply) and apply:
+        f = fields(pid)
     option = lambda field, name: next((o["id"] for o in f.get(field, {}).get("options", [])
                                        if o["name"].lower() == name.lower()), None)
 
@@ -184,8 +243,12 @@ def main():
 
     since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=LOOKBACK_DAYS)).isoformat()
     changes = 0
-    for issue in pages(ISSUES, ["repository", "issues"], o=OWNER, r=REPO, since=since):
-        num = issue["number"]
+    issues = {i["number"]: i for i in pages(ISSUES, ["repository", "issues"], o=OWNER, r=REPO, since=since)}
+    planned = sorted({m for team in TEAM_SPRINTS.values() for ms in team.get("plan", {}).values() for m in ms})
+    for m in planned:
+        for i in pages(MILESTONE_ISSUES, ["repository", "issues"], o=OWNER, r=REPO, m=str(m)):
+            issues.setdefault(i["number"], i)
+    for num, issue in sorted(issues.items()):
         if num not in have:
             if issue["state"] != "OPEN":
                 continue
@@ -223,6 +286,10 @@ def main():
         elif current.get("Day") in day_start:
             # A Day set on the board: keep the Week in step with it.
             wanted["Week"] = ("iteration", day_start[current["Day"]])
+        closed_on = dt.date.fromisoformat(issue["closedAt"][:10]) if issue.get("closedAt") else None
+        sprint = sprint_for(labels, (issue.get("milestone") or {}).get("number"), closed_on, TEAM_SPRINTS)
+        if sprint:
+            wanted[sprint[0]] = ("iteration", sprint[1])
 
         for field, (kind, value) in wanted.items():
             if field not in f:
@@ -258,6 +325,7 @@ def main():
                 gql("""mutation($p: ID!, $i: ID!, $f: ID!, $v: ProjectV2FieldValue!) {
                     updateProjectV2ItemFieldValue(input: {projectId: $p, itemId: $i, fieldId: $f, value: $v}) {
                       projectV2Item { id } } }""", p=pid, i=item, f=f[field]["id"], v=payload)
+                time.sleep(WRITE_PAUSE)
 
     print(f"{changes} change(s){'' if apply else ' (dry run; pass --apply)'}")
     if skipped:
