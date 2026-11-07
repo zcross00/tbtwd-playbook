@@ -5,6 +5,7 @@
 - New page [Teams](playbook/11-teams.md): equal agent teams on one project, each with its own coordinator, lanes, Code review, Verification, grooming, retro and usage report. Issues and milestones belong to a team by assignee (or a `team:<name>` label while two teams share one login) and a `Team:` line. `main` requires one approving review, which with one login per team always comes from the other team; while a login is shared the ruleset is off and the review is a signed PR comment. A 6-hour fallback goes to the owner.
 - Teams talk by email, one address per team, with `[decision]`, `[question]`, `[proposal]`, `[needs-owner]` and `[fyi]` subjects, and each coordinator watches its own address hourly. GitHub carries the work, reviews included; a PR waiting for the other team carries a `review:<name>` label.
 - Acceptance builds (playtests) stay with the one team whose account reaches the owner's playtest machine; the other team hands its milestones over for them.
+- While teams share one login, every team labels its items `team:<name>` and signs its posts `Team: <name>`; an unlabelled item is nobody's until a team claims it.
 - Supersedes the unmerged "Two crews" page (PR #15).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)

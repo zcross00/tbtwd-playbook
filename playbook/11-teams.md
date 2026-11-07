@@ -53,12 +53,12 @@ To hand a milestone over for its playtest, its team sends a `[fyi]` email naming
 
 When a team has to use another team's login, because its own is suspended or not made yet, GitHub can't tell the two apart. Until it has its own login again:
 
-- **Ownership by label.** The borrowing team puts a `team:<name>` label on its issues and PRs. An issue assigned to the shared login without that label belongs to the login's own team. Assignees stay as they are, so nothing has to be undone later.
-- **The borrowing team signs everything on GitHub.** Each of its PR bodies, issue comments and review comments ends with a `Team: <name>` line above the footer. An unsigned post counts as the login's own team.
+- **Ownership by label.** Every team on the shared login puts a `team:<name>` label on its issues and PRs, the login's own team included. An item without one belongs to nobody until a team labels it while grooming it. Assignees stay as they are, so nothing has to be undone later.
+- **Every team signs everything on GitHub.** Each PR body, issue comment and review comment ends with a `Team: <name>` line above the footer, so a reader can tell the teams apart without the login.
 - **No required approval.** The author's own approval never counts, so a required review would block every PR, and the ruleset stays off. The other team's review is a signed PR comment, `Team: <name> review: approve <sha>` or `changes requested`, and Code review merges only after it. Auto-merge goes on a PR or train only after the other team's `approve <sha>` at its current head; otherwise it would merge the moment CI went green. The 6-hour fallback still applies.
 - **Switching back** takes three steps. The roster maps the team to its own login again, its open issues get that login as assignee, and the ruleset goes on. The labels and signatures can stay.
 
-*Why:* the owner, 2026-11-07, after GitHub suspended the second team's login: "im going to have it use my private account for now, while i wait for the appeal. we'll have to design around that."
+*Why:* the owner, 2026-11-07, after GitHub suspended the second team's login: "im going to have it use my private account for now, while i wait for the appeal. we'll have to design around that." Then, naming the login's own team: "we are going to be team overseer over here. that's what we should be tagging our stuff with, the same way architect tags all his stuff with that".
 
 ---
 
