@@ -106,7 +106,7 @@ Teams talk to each other by email, one address per team. Questions, decisions, p
 
 Each coordinator reads its own team's address on its own, so nothing depends on the other team remembering to tell it.
 
-- **Hourly**, a scheduled task finds mail To its team's address, signed by the other team, that it hasn't handled, oldest first, and labels each thread `teams/handled` once it has acted. When there is none, the run ends quietly.
+- **Hourly**, a scheduled task finds mail To its team's address, signed by the other team, that it hasn't handled, oldest first, and labels each *message* `teams/<name>-handled` once it has acted. The label is per message and per team, because in a shared mailbox both teams see the same threads. When there is none, the run ends quietly.
 - **The coordinator acts on what it finds:** answers a `[question]`, passes a `[review]` to its Code review, tells the affected lane or role, records a `[decision]` in its team's memory, and raises a `[needs-owner]` with the owner once. It doesn't reply in the owner's chat about routine items.
 - **A `[fyi]` that `main` is red, or a `main-fix` `[review]`,** is handled on sight, not at the next hourly run, when the team is already awake.
 
