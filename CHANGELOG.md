@@ -1,10 +1,11 @@
 # Changelog
 
-## 2.6 (merges in the Saturday window; renumber against what lands first)
+## 2.4 (2026-11-07, Saturday window)
 
 - CI tiers: the merge gate runs the **train tier** (every check but the heavy sweeps, each of which keeps a smoke twin in it); the **nightly run** on `main` runs everything and is part of the gate. Timed and scaling checks never leave the train tier.
 - Working in parallel: new section, the **ready gate is one complete run** of the whole check list on the PR's head with current `main` merged in, its summary in the PR body; a split run counts only when a summary proves the parts cover every check on one tree against one `main`. Where the project's CI runs that complete run on every ready PR, it is the ready gate, and the author runs a quick local check plus the area's full checks before ready.
-- Working in parallel: **a red night is a `main-fix`**, filed naming the day's trains; Code review bisects, the next train carries the fix or a revert while other trains wait, and the train carrying the fix is labelled `main-fix` itself. A failing floor is never lowered to get green: one under 3 spreads from its measured mean is re-set to mean minus 3 spreads, on more seeds if needed, keeping the rate.
+- Working in parallel: **a red night is a `main-fix`**, filed naming the day's trains; Code review bisects, the next train carries the fix or a revert while other trains wait, and the queue counts the train carrying the fix as the fix, so the train needs no `main-fix` label of its own. A failing floor is never lowered to get green: one under 3 spreads from its measured mean is re-set to mean minus 3 spreads, on more seeds if needed, keeping the rate.
+- `kit/queue/pc_queue.py`: a train that carries a `main-fix` PR is treated as the fix (`carrier`), so the queue no longer holds the train behind its own member and the train needs no `main-fix` label of its own (#26).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
