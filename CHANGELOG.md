@@ -4,7 +4,7 @@
 
 - CI tiers: the merge gate runs the **train tier** (every check but the heavy sweeps, each of which keeps a smoke twin in it); the **nightly run** on `main` runs everything and is part of the gate. Timed and scaling checks never leave the train tier.
 - Working in parallel: new section, the **ready gate is one complete run** of the whole check list on the PR's head with current `main` merged in, its summary in the PR body; a split run counts only when a summary proves the parts cover every check on one tree against one `main`.
-- Working in parallel: **a red night is a `main-fix`**, filed naming the day's trains; Code review bisects, the next train carries the fix or a revert, and the failing floor is never lowered to get green.
+- Working in parallel: **a red night is a `main-fix`**, filed naming the day's trains; Code review bisects, the next train carries the fix or a revert while other trains wait, and the train carrying the fix is labelled `main-fix` itself. A failing floor is never lowered to get green: one under 3 spreads from its measured mean is re-set to mean minus 3 spreads, on more seeds if needed, keeping the rate.
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
