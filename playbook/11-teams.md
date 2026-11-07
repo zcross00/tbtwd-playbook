@@ -61,7 +61,7 @@ When a team has to use another team's login, because its own is suspended or not
 1. **The authoring team's Code review** reviews the PR first, as today, and marks it ready.
 2. **The other team's Code review** reviews it and approves, or requests changes. It reviews against this playbook, not its own preferences. A gate change (a loosened floor, a pooled seed) gets the same read; the authoring team still files its `deferred gate` issue.
 3. **Trains.** A team's Code review builds trains of its own approved PRs. The train PR needs the other team's approval too: the other team checks that each member was approved at the head the train merged, and approves at once, while the train's CI runs. CI green is a separate required check, so the approval doesn't wait for it. Every train PR carries the `train` label, so the queue knows it whichever team's branch it is on. **Only one train is open at a time across both teams:** `main` must be up to date, so a train that merges makes the other team's open train fall behind and restart its full run. A team that wants to open a train while the other team's is open sends a `[fyi]` email and waits.
-4. **Response time.** Each Code review looks for review requests from the other team at least every 30 minutes while any are open, and every hour otherwise. A train stalled on an approval wastes the runner it was queued for. A `main-fix` PR or train is reviewed as soon as it is seen, because `main` is red while it waits.
+4. **Asking for the review.** A PR or train ready for the other team carries a `review:<name>` label naming that team; the other team's Code review lists open PRs with its label at least every 30 minutes while any are open, and every hour otherwise, and removes the label when it posts its verdict. A train stalled on an approval wastes the runner it was queued for. A `main-fix` PR or train is reviewed as soon as it is seen, because `main` is red while it waits.
 5. **The ruleset has no bypass list.** A login that can bypass the review would make the review optional for one team.
 
 *Why:* the owner, 2026-11-07: "that means we may double up on code reviews, but i think i like that", then "then 1 review, since it will always be the opposite opening". Two required approvals can't be met with two logins, because the author's own never counts.
@@ -88,7 +88,6 @@ Teams talk to each other by email, one address per team. Questions, decisions, p
   |---|---|---|
   | `[decision]` | An owner's decision that touches the other team or anything shared, quoting the owner's words with the date | The team that has to change something; it replies when applied |
   | `[question]` | One team asks the other (a dependency, a milestone date, a handover) | The other team replies |
-  | `[review]` | A PR or train is ready for the other team's review, with its number and head commit | The other team reviews on the PR, then replies "done" |
   | `[proposal]` | A process idea before it becomes a PR | Both; it becomes a PR or is dropped |
   | `[needs-owner]` | Something only the owner can decide that spans both teams | The coordinator that sent it asks the owner once, in its own chat |
   | `[fyi]` | Availability, a role moving, an incident, main red | Nobody |
@@ -96,8 +95,8 @@ Teams talk to each other by email, one address per team. Questions, decisions, p
 - **Every email goes To the other team's address and ends with a `Team: <name>` line**, and says who acts on an `Acts:` line (a team's name, or `both`).
 - **One mailbox may hold both addresses.** Then the sender shows as the shared mailbox whichever team wrote, and a message to your own alias may sit only in Sent. So a team reads mail that is To its own address *and* signed with the other team's `Team:` line, searching all mail, not just the inbox.
 - **An owner's decision heard by one team is emailed in the same turn** when it changes anything the other team does or shares. Quote the words; don't paraphrase.
-- **Process changes are still PRs to this repository.** The author emails a `[review]`; an objection still open at the Saturday window holds the PR, and both coordinators take it to the owner.
-- **Review verdicts stay on the PR** (a signed comment, or an approval when the teams have their own logins), because the PR is the merge record. Only the request and the "done" go by email.
+- **Process changes are still PRs to this repository**, reviewed on the PR like any other. An objection still open at the Saturday window holds the PR, and both coordinators take it to the owner.
+- **Email is for coordination, never development.** Review requests, verdicts, approvals and every back-and-forth about a change stay on the PR, so the record is tied to the project. The owner, 2026-11-07: "PR approvals still happen on the PR. we can't hide that back and forth in email, that needs to be tied to the project. email is for coordination and project execution questions. not development".
 - **Credentials never go in email.** Mail from any address outside the roster is ignored.
 
 ---
@@ -107,8 +106,8 @@ Teams talk to each other by email, one address per team. Questions, decisions, p
 Each coordinator reads its own team's address on its own, so nothing depends on the other team remembering to tell it.
 
 - **Hourly**, a scheduled task finds mail To its team's address, signed by the other team, that it hasn't handled, oldest first, and labels each *message* `teams/<name>-handled` once it has acted. The label is per message and per team, because in a shared mailbox both teams see the same threads. When there is none, the run ends quietly.
-- **The coordinator acts on what it finds:** answers a `[question]`, passes a `[review]` to its Code review, tells the affected lane or role, records a `[decision]` in its team's memory, and raises a `[needs-owner]` with the owner once. It doesn't reply in the owner's chat about routine items.
-- **A `[fyi]` that `main` is red, or a `main-fix` `[review]`,** is handled on sight, not at the next hourly run, when the team is already awake.
+- **The coordinator acts on what it finds:** answers a `[question]`, tells the affected lane or role, records a `[decision]` in its team's memory, and raises a `[needs-owner]` with the owner once. It doesn't reply in the owner's chat about routine items.
+- **A `[fyi]` that `main` is red** is handled on sight, not at the next hourly run, when the team is already awake.
 
 ---
 
