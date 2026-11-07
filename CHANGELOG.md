@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6 (merges in the Saturday window)
+
+- New page [Fresh sessions](playbook/13-fresh-sessions.md): a long-running coordinator or standing role keeps a small state file outside `main`, starts a fresh session daily, at the sprint reset, or past half its context, and reads a fixed handoff prompt first. Scheduled checks run headless in their own session and leave a digest; heavy reads go to subagents.
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.

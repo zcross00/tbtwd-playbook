@@ -32,6 +32,7 @@ This playbook was extracted from a live project: a single-player game built end 
 | 8 | [Estimating and forecasting](playbook/08-estimating.md) | Sizes, units, honest due dates |
 | 9 | [Cadences](playbook/09-cadences.md) | Daily review, morning report, nightly main, weekly usage report and retro |
 | 10 | [Adopting the playbook](playbook/10-adopting.md) | Day-one setup, the enforcement kit, scaling to an enterprise |
+| 13 | [Fresh sessions](playbook/13-fresh-sessions.md) | Keeping a long-running coordinator small: state file, daily reset, handoff prompt |
 
 Agents start at [AGENTS.md](AGENTS.md).
 
