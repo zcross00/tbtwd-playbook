@@ -2,7 +2,7 @@
 
 ## 2.6 (merges in the Saturday window)
 
-- Principles: a new rule, The owner signs off on every word a customer reads. Customer-facing copy goes to the owner as plain text, and nothing is generated from it until the owner has signed off on the exact wording; any later change goes back to them.
+- Principles: a new rule, The owner signs off on every word a customer reads. Customer-facing copy (store page, trailer, pitch, socials, website, press) goes to the owner as plain text in one weekly batch during sprint planning, and nothing is generated from it until the owner has signed off on the exact wording; any later change goes back to them. In-game text is out of scope (11-07 retro).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
