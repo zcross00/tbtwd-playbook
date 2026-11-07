@@ -8,6 +8,7 @@
 - While teams share one login, every team labels its items `team:<name>` and signs its posts `Team: <name>`; an unlabelled item is nobody's until a team claims it.
 - Verification is crossed too: a team never closes its own issues. A merged issue gets a `verify:<name>` label for the other team, whose Verification closes it or hands it back as `verify-failed`.
 - Owner input (new feature requests and feedback) has one channel: the input team named in the roster turns it into issues and milestones for both teams, and the other team asks it for owner input by `[question]` email.
+- Only a team's coordinator (or the one inbox thread it names) emails the other team; lanes and roles route through it.
 - Supersedes the unmerged "Two crews" page (PR #15).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
