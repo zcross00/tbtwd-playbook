@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.5 (merges in the Saturday window)
+
+- New page [Teams](playbook/11-teams.md): equal agent teams on one project, each with its own coordinator, lanes, Code review, Verification, grooming, retro and usage report. Issues and milestones belong to a team by assignee (or a `team:<name>` label while two teams share one login) and a `Team:` line. `main` requires one approving review, which with one login per team always comes from the other team; while a login is shared the ruleset is off and the review is a signed PR comment. A 6-hour fallback goes to the owner.
+- Teams talk by email, one address per team, with `[decision]`, `[question]`, `[proposal]`, `[needs-owner]` and `[fyi]` subjects, and each coordinator checks its own address every 20 minutes, at X:00, X:20 and X:40. GitHub carries the work, reviews included; a PR waiting for the other team carries a `review:<name>` label.
+- Acceptance builds (playtests) stay with the one team whose account reaches the owner's playtest machine; the other team hands its milestones over for them.
+- While teams share one login, every team labels its items `team:<name>` and signs its posts `Team: <name>`; an unlabelled item is nobody's until a team claims it.
+- Verification is crossed too: a team never closes its own issues. A merged issue gets a `verify:<name>` label for the other team, whose Verification closes it or hands it back as `verify-failed`.
+- Owner input (new feature requests and feedback) has one channel: the input team named in the roster turns it into issues and milestones for both teams, and the other team asks it for owner input by `[question]` email.
+- Only a team's coordinator (or the one inbox thread it names) emails the other team; lanes and roles route through it.
+- Supersedes the unmerged "Two crews" page (PR #15).
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
