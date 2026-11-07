@@ -16,8 +16,8 @@ Each team has a short **name** and acts on GitHub as **one login of its own**; b
 |---|---|
 | Coordinator | Its own lanes, its own chat with the owner, its inbox watch |
 | Work threads | Only issues assigned to its login |
-| Code review | Reviews its own team's PRs to ready, builds its own trains, and reviews and approves the **other** team's PRs (below) |
-| Verification | Closes its own team's issues |
+| Code review | Reviews its own team's PRs to ready and builds its own trains; the approval that lets them merge always comes from the **other** team's Code review (below) |
+| Verification | Verifies and closes the **other** team's issues (below); never its own |
 | Daily backlog review | Grooms issues assigned to its login and milestones its team owns |
 | Usage report and retro | Its own budget, its own week, at its own reset |
 | Dev process | Its own share of the CI, queue, runners and kit, which both teams run together (below) |
@@ -73,6 +73,12 @@ When a team has to use another team's login, because its own is suspended or not
 5. **The ruleset has no bypass list.** A login that can bypass the review would make the review optional for one team.
 
 *Why:* the owner, 2026-11-07: "that means we may double up on code reviews, but i think i like that", then "then 1 review, since it will always be the opposite opening". Two required approvals can't be met with two logins, because the author's own never counts.
+
+### Verification: the other team closes
+
+The same rule covers closing issues: **a team never verifies its own work.** When an issue's last PR merges, its team's lane puts a `verify:<name>` label on the issue naming the other team. The other team's Verification lists open issues with its label on the same cadence as reviews (every 30 minutes while any are open), checks the merged work against the issue, and either closes it with a signed comment or leaves a signed comment naming what's missing swaps its label for `verify-failed`. The owner team fixes it and swaps `verify-failed` back for `verify:<name>`. Milestones still close with their own team's Code review, once every issue in them is closed. Acceptance builds (playtests) stay with the playtest team, as above.
+
+*Why:* the owner, 2026-11-07: "i want that to be the mandate, i want reviews to always come from another team".
 
 ### When the other team can't review
 

@@ -6,6 +6,7 @@
 - Teams talk by email, one address per team, with `[decision]`, `[question]`, `[proposal]`, `[needs-owner]` and `[fyi]` subjects, and each coordinator checks its own address every 20 minutes, at X:00, X:20 and X:40. GitHub carries the work, reviews included; a PR waiting for the other team carries a `review:<name>` label.
 - Acceptance builds (playtests) stay with the one team whose account reaches the owner's playtest machine; the other team hands its milestones over for them.
 - While teams share one login, every team labels its items `team:<name>` and signs its posts `Team: <name>`; an unlabelled item is nobody's until a team claims it.
+- Verification is crossed too: a team never closes its own issues. A merged issue gets a `verify:<name>` label for the other team, whose Verification closes it or hands it back as `verify-failed`.
 - Supersedes the unmerged "Two crews" page (PR #15).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
