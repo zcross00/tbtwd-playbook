@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Hold a CI run until it's its turn on the PC's full runner.
 
-GitHub hands queued jobs to a runner in no particular order, so with one
-full runner and several ready PRs a run could wait behind ones queued after
+GitHub hands queued jobs to a runner in no particular order, so with few
+full runners and several ready PRs a run could wait behind ones queued after
 it. ci.yml's `queue` job runs this on one of the PC's queue runners
-(label `queue`) before `full` is queued. It returns once:
+(label `queue`) before `full` is queued. With FULL_RUNNERS full runners
+(`queue.full_runners`, 1 unless set), it returns once:
 
-- no run that sorts ahead of this one is still in progress, and
-- no run behind it holds the PC (its `full` job queued or running there).
+- fewer than FULL_RUNNERS runs that sort ahead of this one are still in
+  progress, and
+- those, plus the runs behind it that hold the PC (their `full` job queued
+  or running there), number fewer than FULL_RUNNERS.
 
 Runs sort by priority, then by when they joined the line: a PR labelled
 `main-fix` goes first, then a PR labelled `priority: A`, or one whose body
@@ -15,7 +18,7 @@ says "Refs" an issue labelled `priority: A`, then the one waiting longest.
 
 While main is red (#818), the PR that turns it green carries `main-fix`, and
 every other run waits at the front of the line while an open, ready PR has
-the label: a run merges main as it is when `full` starts, so a run on a red
+the label and its head hasn't passed `full` yet: a run merges main as it is when `full` starts, so a run on a red
 main would fail and hold the PC while the fix waited behind it (#813 waited
 fourth on 2026-10-26). Nothing is cancelled and no run loses its place. A
 draft doesn't pause anything, and a label older than MAIN_FIX_SECS is stale
@@ -140,6 +143,7 @@ COST = CFG["queue"]["cost"]
 # No run goes hosted past this much of the month's budget (minutes.py's WARN);
 # 0 never sends a run hosted.
 OVERFLOW_UNDER = CFG["queue"]["overflow_under"]
+FULL_RUNNERS = max(1, int(CFG["queue"].get("full_runners", 1)))
 # How long after its mark a hosted run can still be going (its timeout is 150).
 OVERFLOW_SECS = 4 * 60 * 60
 # A run this new waits for the PC rather than go hosted: a branch pushed this
@@ -290,8 +294,19 @@ class Queue:
         """Open, ready PRs labelled main-fix, as (number, when labelled), oldest
         label first."""
         found = self.get(f"issues?labels={MAIN_FIX_LABEL}&state=open&per_page=100")
-        prs = [i["number"] for i in found if "pull_request" in i and not i.get("draft")]
+        prs = [i["number"] for i in found if "pull_request" in i and not i.get("draft") and not self.passed_full(i["number"])]
         return sorted(((n, self.labelled_at(n)) for n in prs), key=lambda f: (f[1], f[0]))
+
+    def passed_full(self, number):
+        """Whether PR `number`'s head already passed `full`: its run has had
+        its turn, and only the merge is left (#2023, 11-07: green #2078 held
+        the line from 08:48 to 09:24 while its merge waited)."""
+        try:
+            sha = self.get(f"pulls/{number}")["head"]["sha"]
+            found = self.get(f"commits/{sha}/check-runs?check_name=full&per_page=100")["check_runs"]
+        except Exception:  # noqa: BLE001 - unread counts as not passed
+            return False
+        return any(r.get("status") == "completed" and r.get("conclusion") == "success" for r in found)
 
     def labelled_at(self, number):
         """When PR `number` was last labelled main-fix ("" if not found)."""
@@ -476,12 +491,14 @@ class Queue:
                 continue
             (ahead if self.key(r) < my_key else behind).append(r)
         ahead.sort(key=self.key)
-        while ahead and self.alive_checked.get(ahead[0]["id"], -IDLE_EVERY) <= self.polls - IDLE_EVERY:
-            if not done_with_pc(self.jobs_of(ahead[0]["id"])):
-                self.alive_checked[ahead[0]["id"]] = self.polls
-                break
-            self.done.add(ahead.pop(0)["id"])
-        if ahead:
+        i = 0
+        while i < len(ahead) and i < FULL_RUNNERS and self.alive_checked.get(ahead[i]["id"], -IDLE_EVERY) <= self.polls - IDLE_EVERY:
+            if not done_with_pc(self.jobs_of(ahead[i]["id"])):
+                self.alive_checked[ahead[i]["id"]] = self.polls
+                i += 1
+                continue
+            self.done.add(ahead.pop(i)["id"])
+        if len(ahead) >= FULL_RUNNERS:
             why = self.overflow(mine, ahead)
             if why:
                 return "hosted", why
@@ -516,14 +533,19 @@ class Queue:
                 n, at = fixes[0]
                 print(time.strftime("%H:%M:%S"), f"#{n}'s {MAIN_FIX_LABEL} label is stale (since {at}); not waiting for it", flush=True)
         behind += queued
+        busy = list(ahead)
         for r in behind:
             if r["id"] in self.seen_waiting:
                 continue
             jobs = self.jobs_of(r["id"])
             if holds_pc(jobs):
-                return False, f"the PC is running {describe(r)}"
-            if waiting(jobs):
+                busy.append(r)
+                if len(busy) >= FULL_RUNNERS:
+                    return False, f"the PC is running {describe(r)}"
+            elif waiting(jobs):
                 self.seen_waiting.add(r["id"])
+        if ahead:
+            return True, f"{len(ahead)} ahead on {FULL_RUNNERS} full runners, {len(behind)} behind"
         return True, f"first in line, {len(behind)} behind"
 
 
