@@ -36,7 +36,7 @@ Projects die by correcting one detail forever. So:
 
 Words that leave the project for customers, funders, press or the public go to the owner as plain text first: the store page, trailer text, pitch decks, social posts, the website, and press notes (capsule and banner text and emails to people outside the project count too). Nothing is generated from them (no video, image, page, deck or post) until the owner has signed off on that exact wording. **In-game text is out of scope**: dialogue, UI labels and item names follow the normal review.
 
-- **One weekly batch.** Copy waiting for sign-off goes to the owner once a week, as one batch during sprint planning, through the coordinator. Each item says what it's for and where it will appear, and the owner can read the whole batch in one pass.
+- **One weekly batch.** Copy waiting for sign-off goes to the owner once a week, as one batch during sprint planning, through the coordinator. Each item says what it's for and where it will appear, and the owner can read the whole batch in one pass. Copy with a deadline before the next planning (a store page due for review, say) goes in an earlier batch of its own.
 - **Copy first, assets second.** Mock-ups and test renders that use placeholder text are fine; a finished asset waits for the sign-off.
 - **The sign-off is on the exact words.** The approved copy is kept verbatim with the owner's yes quoted ([Record the owner's words](#record-the-owners-words-not-a-paraphrase)). Any change to it, even a small one, goes back to the owner before it ships.
 - **This isn't hiding how the work is made.** It's about the words reading like the owner's project, not about concealing that agents helped write them.
