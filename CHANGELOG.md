@@ -4,6 +4,7 @@
 
 From the 11-07 retro (the owner said yes to all the picks):
 - A train that breaks `main` is reverted first and fixed after (Working in parallel, Main stays green).
+- A train that fails twice is split into smaller trains (Working in parallel, Main stays green).
 - A raised timeout files an issue for its cause first, the same way a deferred gate does (Lifecycle, rule 4).
 
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
