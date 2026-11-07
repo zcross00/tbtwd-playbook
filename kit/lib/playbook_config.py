@@ -75,6 +75,8 @@ DEFAULTS = {
         # goes hosted past.
         "cost": {"overflow": 5.0},
         "overflow_under": 0.0,
+        # How many `full` runs the PC runs at once, one per full runner.
+        "full_runners": 1,
     },
     "hosted": {
         "budget": 0.0,
