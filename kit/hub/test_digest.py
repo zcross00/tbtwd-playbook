@@ -88,15 +88,15 @@ class DigestTest(unittest.TestCase):
 
     def test_older_form(self):
         a = self.args("config", "/nonexistent.json", "me", "login-a", "roster", "login-b")
-        self.assertEqual(digest.settings(a), ("login-a", {"login-b": "login-b", "login-a": "login-a"}, []))
+        self.assertEqual(digest.settings(a), ("login-a", {"login-b": "login-b", "login-a": "login-a"}, [], None))
 
     def test_config_wins(self):
         import json
         import tempfile
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
-            json.dump({"team": "a", "roster": SHARED, "notes": ["n1"]}, f)
+            json.dump({"team": "a", "roster": SHARED, "notes": ["n1"], "last_digest": "x"}, f)
         a = self.args("config", f.name, "me", "login-a", "roster", "login-b")
-        self.assertEqual(digest.settings(a), ("a", SHARED, ["n1"]))
+        self.assertEqual(digest.settings(a), ("a", SHARED, ["n1"], "x"))
         os.unlink(f.name)
 
 

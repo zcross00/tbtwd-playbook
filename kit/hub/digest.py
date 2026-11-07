@@ -15,7 +15,7 @@ when there is nothing.
 --config FILE (default: config.json beside this script, when there is one) sets
 the team and roster instead, so a scheduled task's command never has to change
 when a team's login does: {"team": NAME, "roster": {NAME: LOGIN, ...},
-"notes": [LINE, ...]}. Its notes are printed under every digest that lists
+"notes": [LINE, ...], "last_digest": FILE}. Its notes are printed under every digest that lists
 something. The older form --me LOGIN --roster LOGIN,LOGIN names each team by
 its login.
 
@@ -140,7 +140,7 @@ def settings(a):
     roster = dict(cfg.get("roster") or parse_roster(a.roster))
     if not cfg.get("roster") and a.me and team == a.me:
         roster.setdefault(a.me, a.me)
-    return team, roster, cfg.get("notes") or []
+    return team, roster, cfg.get("notes") or [], cfg.get("last_digest")
 
 
 def main(argv=None):
@@ -153,7 +153,7 @@ def main(argv=None):
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("repos", nargs="+")
     a = ap.parse_args(argv)
-    team, roster, notes = settings(a)
+    team, roster, notes, last = settings(a)
     if not team or team not in roster:
         ap.error("no team, or the team is not in the roster")
     state = {}
@@ -168,6 +168,9 @@ def main(argv=None):
     if notes and not out.startswith("NOTHING NEW"):
         out += "\n" + "\n".join(f"NOTE: {n}" for n in notes)
     print(out)
+    if last and not a.dry_run:
+        with open(last, "w") as f:
+            f.write(f"{stamp}\n{out}\n")
     if not a.dry_run:
         for r in a.repos:
             state[r] = stamp
