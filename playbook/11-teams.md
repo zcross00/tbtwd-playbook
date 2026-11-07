@@ -30,11 +30,12 @@ Each team has a short **name** and acts on GitHub as **one login of its own**; b
 | `main`, the CI queue and the runners | Both teams' Dev process, as one machine | One tree, one machine; the queue runs one train at a time whichever team built it. Each team's Dev process can fix the CI and the kit; a change to the shared machinery is a PR the other team reviews, and anything that needs the other team's access (a login on the server) is a `[question]` email |
 | This playbook | Both teams, through PRs | One process |
 | Committed dates (release, early access) | The owner | Both teams plan against the same calendar |
+| Owner input (new feature requests, feedback) | The input team the `roster` names | One channel to the owner. The input team hears every new ask and piece of feedback, and its backlog review turns them into issues and milestones for either team. A team that needs the owner's input on such an item asks the input team with a `[question]` email; the input team answers or asks the owner once. *Why:* the owner, 2026-11-07: "all new feature requests, feedback, etc, will be communicated between me and you, and you will in turn own the process of turning that into issues/milestones. architect will route all needs for input around those kinds of items through you, so that we keep a singular input channel" |
 | Acceptance builds (playtests) | The team whose account reaches the owner's playtest machine (the `roster` names it) | The owner plays on one machine. A milestone of the other team that needs a playtest is handed over for its build when its last issue merges |
 
 ---
 
-Playtests are the only thing one team holds alone; everything else is run by both. *Why:* the owner, 2026-11-07: "we will only ever do playtests on the laptop, so this account will solely be responsible for handling that specific aspect. everything else should be shared".
+Playtests and owner input are the only things one team holds alone; everything else is run by both. *Why:* the owner, 2026-11-07: "we will only ever do playtests on the laptop, so this account will solely be responsible for handling that specific aspect. everything else should be shared".
 
 To hand a milestone over for its playtest, its team sends a `[fyi]` email naming the milestone, the merged commit and anything the build's setup needs. The playtest team builds it, hands it to the owner, and reports what the owner found back to the milestone's team, also by email. Corrections land as issues in the milestone, owned by its team.
 
