@@ -1,7 +1,13 @@
 """Tests for sync.py's board: line parsing: python3 -m unittest discover -s kit/board (kit/test.sh)"""
+import datetime as dt
 import unittest
 
 import sync
+
+TEAMS = {"team:a": {"field": "A sprint", "prefix": "A", "start": "2026-11-07", "days": 7, "count": 3,
+                    "plan": {"1": [49, 27], "2": [27, 57]}},
+         "team:b": {"field": "B sprint", "prefix": "B", "start": "2026-11-09", "days": 7, "count": 3,
+                    "plan": {"1": [52]}}}
 
 
 def said(*bodies):
@@ -46,6 +52,34 @@ class BoardLines(unittest.TestCase):
 
     def test_the_newest_line_wins(self):
         self.assertEqual(said("board: actual=30 (final)", "board: actual=31")["actual"], "31")
+
+
+
+class TeamSprints(unittest.TestCase):
+    def sprint(self, labels, milestone, closed=None):
+        return sync.sprint_for(set(labels), milestone, closed and dt.date.fromisoformat(closed), TEAMS)
+
+    def test_an_open_issue_goes_in_the_latest_sprint_listing_its_milestone(self):
+        self.assertEqual(self.sprint(["team:a"], 49), ("A sprint", "2026-11-07"))
+        self.assertEqual(self.sprint(["team:a"], 27), ("A sprint", "2026-11-14"))
+        self.assertEqual(self.sprint(["team:b"], 52), ("B sprint", "2026-11-09"))
+
+    def test_a_closed_issue_stays_in_the_sprint_it_closed_in(self):
+        self.assertEqual(self.sprint(["team:a"], 27, "2026-11-10"), ("A sprint", "2026-11-07"))
+        self.assertEqual(self.sprint(["team:a"], 27, "2026-11-15"), ("A sprint", "2026-11-14"))
+        self.assertIsNone(self.sprint(["team:a"], 57, "2026-11-10"))
+
+    def test_no_team_label_or_milestone_outside_the_plan_gets_no_sprint(self):
+        self.assertIsNone(self.sprint([], 49))
+        self.assertIsNone(self.sprint(["team:b"], 49))
+        self.assertIsNone(self.sprint(["team:a"], 52))
+        self.assertIsNone(self.sprint(["team:a"], None))
+
+    def test_a_new_field_gets_numbered_week_long_iterations(self):
+        its = sync.sprint_iterations(TEAMS["team:a"])
+        self.assertEqual([i["title"] for i in its], ["A 1", "A 2", "A 3"])
+        self.assertEqual([i["startDate"] for i in its], ["2026-11-07", "2026-11-14", "2026-11-21"])
+        self.assertEqual({i["duration"] for i in its}, {7})
 
 
 if __name__ == "__main__":

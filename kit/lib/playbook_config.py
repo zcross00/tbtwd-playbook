@@ -39,6 +39,8 @@ DEFAULTS = {
         "iteration_fields": ["Day", "Week"],
         # `area:` label -> the Team field's option.
         "teams": {},
+        # Team label -> its sprint field and plan (example.playbook.toml).
+        "team_sprints": {},
     },
     "milestones": {
         # The workflow whose scheduled runs on main are the nightly check.

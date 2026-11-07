@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.3 (2026-11-07)
+
+- `kit/board/sync.py`: team sprints on the board. `[board.team_sprints]` gives each team label an iteration field (created by the sync when the board lacks it, with numbered week-long iterations from the team's own start day) and each sprint's milestones. An issue with the team label is put in the sprint its milestone is planned in: the latest one while it's open, the one it closed in once it's closed. No `board:` line is written for this, so filling a sprint costs no issue writes. Issues in planned milestones are synced even when they haven't changed within `lookback_days`. Board writes are spaced half a second apart.
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
