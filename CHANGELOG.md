@@ -4,6 +4,15 @@
 
 - New `kit/board/paperwork.py` and the reusable `kit-paperwork` workflow: a check on each PR for the paperwork the reviewer read by hand (a closing word, a `Refs #N` line on a code PR, each ref'd issue in a milestone and groomed, a `deferred gate` issue for a loosened gate). Settings under `[paperwork]` in `.playbook.toml`.
 
+## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
+
+- `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
+- `kit/queue/pc_queue.py`: a run that has waited 15 minutes behind others while nothing holds the PC fails as `QUEUE STUCK`, naming the run ahead, so whoever watches the PR hears in 15 minutes and not hours.
+
+## 2.3.1 (2026-11-02, owner declared it urgent)
+
+- License: the whole repository is now MIT (was CC BY 4.0), so the docs and the `kit/` code can be used commercially under one standard software license. No rule changes.
+
 ## 2.3 (2026-10-31, initial setup; the owner waived the Saturday window)
 
 - New `kit/`: the process tooling moved here from the reference project, so the project keeps only one `.playbook.toml` and thin workflows. Board sync, milestone burn-down and forecast, PR milestones, the generated wiki and decision answers, the CI queue, newer-run check and merge trains, the CI gate scripts, hosted-minutes and churn reports, conflict replay, release notes, the daily backlog scan and the weekly usage report.
