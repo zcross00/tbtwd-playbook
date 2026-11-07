@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.2 (merges in the Saturday window; whoever merges renumbers against what lands first)
+
+From the 11-07 retro (the owner said yes to all the picks):
+- A train that breaks `main` is reverted first and fixed after (Working in parallel, Main stays green).
+- A train that fails twice is split into smaller trains (Working in parallel, Main stays green).
+- A raised timeout files an issue for its cause first, the same way a deferred gate does (Lifecycle, rule 4).
+
 ## 2.6.1 (merges in the Saturday window; whoever merges renumbers against what lands first)
 
 - `kit/queue/pc_queue.py`: `queue.full_runners` in `.playbook.toml` (1 unless set) is how many `full` runs the PC takes at once. The first that many runs in line go, and no more than that many hold the PC. With 1, the line works as before.
