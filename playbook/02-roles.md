@@ -18,6 +18,8 @@ On the reference project every role below was a long-running Claude thread. In a
 | **Dev process** | The machinery: CI, queue, runners, board sync, tooling, the weekly usage report, the internal milestones (CI health, coverage) | Changes the process rules without the retro |
 | **Retro** | The weekly review of the process and usage; proposes ranked changes for the owner to approve | Applies changes itself |
 
+A project with more than one agent team runs most of these roles once per team; [Teams](11-teams.md) says which stay single.
+
 Optional cross-cutting roles the reference project added when it needed them: a **coupling review** (watches architecture boundaries across threads) and a **daily backlog review** ([Cadences](09-cadences.md)).
 
 ---

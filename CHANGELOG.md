@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5 (merges in the Saturday window)
+
+- New page [Teams](playbook/11-teams.md): equal agent teams on one project, each with its own coordinator, lanes, Code review, Verification, grooming, retro and usage report. Issues and milestones belong to a team by assignee and a `Team:` line. `main` requires one approving review, which with one login per team always comes from the other team, with a 6-hour fallback that goes to the owner. Teams meet on the hub (this repository's issues, labelled `decision`, `question`, `proposal`, `needs-owner`, `fyi`, `roster`), and each coordinator reads it hourly.
+- New `kit/hub/digest.py`: what the other team posted on the hub since this team last looked.
+- Supersedes the unmerged "Two crews" page (PR #15).
+
 ## 2.3.2 (2026-11-06, emergency: a 3-hour silent queue stall)
 
 - `kit/queue/pc_queue.py`: a run ahead in the queue counts only while it can still take the PC. A run whose `full` has finished, or whose `queue` job was skipped, failed or was cancelled, no longer holds every later run behind it, even when GitHub keeps it listed as in progress.
