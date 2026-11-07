@@ -16,6 +16,15 @@ Many threads build against one `main` and a limited merge gate. These rules keep
 
 ---
 
+## The ready gate: one complete run
+
+- **Before a PR is marked ready**, its author runs the project's whole check list once (`scripts/ci.sh`), on the PR's head with the current `main` merged in, and every check passes.
+- **The PR body carries that run's summary:** every check PASS, plus the `main` SHA it ran against.
+- **A run too long for one command may be split into parts** (`--part i/n`). It counts only if the parts ran on one committed tree against one `main` SHA, and together passed every check. The project's summary tool proves that (`scripts/ci-summary.sh`), its output goes in the body, and the body says the run was split.
+- **Don't start a run that's known to fail or can't finish.** No single run bound to hit the limit, no "rest done by hand". Re-run only what failed, on the same tree.
+
+---
+
 ## Shared files
 
 Files every PR touches get rules that make conflicts trivial:
@@ -59,4 +68,5 @@ Every code PR merges in a train, a train of one included.
 ## Main stays green
 
 - **Nightly full run on `main`.** Two PRs that are each green can break `main` together. A red night is the first line of the morning report, and fixing it is priority A for whoever owns what broke.
+- **A red night is a `main-fix`.** A red nightly run, a failed coverage floor included, files a `main-fix` issue naming the day's merged trains. Code review bisects across those trains and names the PR. The next train carries the fix, or a revert, before anything else. Other trains keep running meanwhile, except PRs that touch the failing check's area; those wait for the fix. Never lower the failing floor to get green.
 - **`main-fix` label.** Once `main` is declared red, the fixing PR (a revert or a fix) gets `main-fix` and jumps every queue; other runs that reach the front wait in place, since they'd merge a red `main`. The label goes stale after 2 hours, so a forgotten label can't halt the queue.
