@@ -11,7 +11,7 @@ Standing routines that keep the board true without anyone remembering to. Each r
 | Daily re-forecast | Daily | CI | Milestone due dates from measured pace |
 | Weekly usage report | Weekly, ~1 h before the budget resets | Dev process | Spend by area and by thread |
 | Weekly retro | Same time as the usage report | Retro thread | Ranked process changes for the owner to approve |
-| Hub watch | Hourly, with more than one team | Each team's coordinator | What the other team posted on the hub ([Teams](11-teams.md)) |
+| Inbox watch | Hourly, with more than one team | Each team's coordinator | What the other team emailed ([Teams](11-teams.md)) |
 
 ---
 

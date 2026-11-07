@@ -26,7 +26,6 @@ Extracted from the reference project, where each tool was built for a failure it
 | `releases/` | `release_notes.py` | Links each playtest pre-release to its milestone, issues and commit; marks older builds superseded |
 | `review/` | `scan.py` | Picks and flags the day's backlog review ([Cadences](../playbook/09-cadences.md)) |
 | `usage/` | `pace.py`, `pc_hours.py`, `usage_report.py` | The weekly usage report: pace against the reset, self-hosted runner hours, cost by area |
-| `hub/` | `digest.py` | What the other team posted on the hub since this team last looked, for the coordinator's hourly watch ([Teams](../playbook/11-teams.md)) |
 | `lib/` | `playbook_config.py`, `config.sh` | Reads `.playbook.toml` for the Python and shell tools |
 
 Every script runs from the project's checkout. `run.sh` runs one (`kit/run.sh board/sync.py --apply`); `python.sh` finds Python 3.11+, or on a self-hosted Windows runner with none installed, fetches a pinned embeddable one.
