@@ -19,6 +19,7 @@ Many threads build against one `main` and a limited merge gate. These rules keep
 ## The ready gate: one complete run
 
 - **Before a PR is marked ready**, its author runs the project's whole check list once (`scripts/ci.sh`), on the PR's head with the current `main` merged in, and every check passes.
+- **Or the project's CI runs it.** A project whose CI runs that complete run on every ready PR (the PR's head with current `main` merged in, and a summary naming the `main` SHA) uses that run as the ready gate. The author then runs a quick local check before marking ready: format, lints and tests on the crates touched, plus the checks in the area changed. A change to behaviour also runs, before ready, the full (non-smoke) checks in its area, and puts their PASS lines in the body. The PR doesn't merge until the CI's complete run is green.
 - **The PR body carries that run's summary:** every check PASS, plus the `main` SHA it ran against.
 - **A run too long for one command may be split into parts** (`--part i/n`). It counts only if the parts ran on one committed tree against one `main` SHA, and together passed every check. The project's summary tool proves that (`scripts/ci-summary.sh`), its output goes in the body, and the body says the run was split.
 - **Don't start a run that's known to fail or can't finish.** No single run bound to hit the limit, no "rest done by hand". Re-run only what failed, on the same tree.
