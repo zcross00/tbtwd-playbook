@@ -86,7 +86,7 @@ Each team meters its usage against its own reset, so this should not happen. If 
 
 ## The team channel: email
 
-Teams talk to each other by email, one address per team. Questions, decisions, proposals, review requests and anything one team learns that the other needs go there, never only in one team's chat. GitHub carries the work itself (issues, PRs, review verdicts), not the conversation about it.
+Teams coordinate by email, one address per team. Questions, decisions, proposals and anything one team learns that the other needs go there, never only in one team's chat. GitHub carries the work and the discussion about each change: issues, PRs, review requests, verdicts and their back-and-forth. Email is only for coordinating around that work.
 
 *Why:* the owner, 2026-11-07, after a night of cross-team issues on GitHub under one shared login: "i think we need to stop using github to communicate between teams. let's switch to email."
 
