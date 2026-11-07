@@ -29,6 +29,13 @@ Each team has a short **name** and acts on GitHub as **one login of its own**; b
 | `main`, the CI queue and the runners | Dev process, on one team (the `roster` names it) | One tree, one machine; the queue runs one train at a time whichever team built it |
 | This playbook | Both teams, through PRs | One process |
 | Committed dates (release, early access) | The owner | Both teams plan against the same calendar |
+| Acceptance builds (playtests) | The team whose account reaches the owner's playtest machine (the `roster` names it) | The owner plays on one machine. A milestone of the other team that needs a playtest is handed over for its build when its last issue merges |
+
+---
+
+*Why:* the owner, 2026-11-07: "we will only ever do playtests on the laptop, so this account will solely be responsible for handling that specific aspect. everything else should be shared".
+
+To hand a milestone over for its playtest, its team sends a `[fyi]` email naming the milestone, the merged commit and anything the build's setup needs. The playtest team builds it, hands it to the owner, and reports what the owner found back to the milestone's team, also by email. Corrections land as issues in the milestone, owned by its team.
 
 ---
 
