@@ -4,7 +4,7 @@ A **team** is one complete agent structure under one budget: a coordinator, its 
 
 Teams are **equals**. Neither runs the other, and neither approves the other's grooming. They can't read each other's chats, files or memory, so they meet in two places only: the project's tracker (issues and PRs) and the **hub**, the playbook repository's own issues.
 
-Each team acts on GitHub as **one login of its own**, and that login is the team's name everywhere below. The hub's `roster` issue lists the teams, their logins, their usage reset times, and who holds each shared role.
+Each team has a short **name** and acts on GitHub as **one login of its own**; below, "its login" means that team's. The hub's `roster` issue maps each team's name to its login, and lists usage reset times and who holds each shared role. When two teams have to share one login, the section [While teams share one login](#while-teams-share-one-login) applies.
 
 *Why:* the reference project first tried one parent with child teams. In use, the accounts had different features and different budgets, and a parent that had to approve the other team's work became the queue. The owner, 2026-11-07: "originally i just wanted one parent and a bunch of children, but seeing this in practice ... make me think the co-equal team route was actually the better bet".
 
@@ -38,6 +38,19 @@ Each team acts on GitHub as **one login of its own**, and that login is the team
 - **A team files new issues assigned to itself.** To hand one over, the owner team reassigns it and says why in a comment. Nobody takes an issue by reassigning it away from the other team.
 - **A milestone belongs to one team**, named on a `Team:` line in its description. That team sets and keeps its dates and closes it. The other team may still own issues in it; their `day` stays within its due date, and moving that date is a hub `question` first.
 - **No cross-team dependency is waited on in chat.** If a team needs the other's unmerged work, it says so in a hub `question` and plans around the answer.
+
+---
+
+## While teams share one login
+
+When a team has to use another team's login, because its own is suspended or not made yet, GitHub can't tell the two apart. Until it has its own login again:
+
+- **Ownership by label.** The borrowing team puts a `team:<name>` label on its issues and PRs. An issue assigned to the shared login without that label belongs to the login's own team. Assignees stay as they are, so nothing has to be undone later.
+- **The borrowing team signs everything.** Each of its hub issues, hub comments, PR bodies and review comments ends with a `Team: <name>` line above the footer. An unsigned post counts as the login's own team. The hub watch sorts posts by that line and by the label.
+- **No required approval.** The author's own approval never counts, so a required review would block every PR, and the ruleset stays off. The other team's review is a signed PR comment, `Team: <name> review: approve <sha>` or `changes requested`, and Code review merges only after it. The 6-hour fallback still applies.
+- **Switching back** takes three steps. The roster maps the team to its own login again, its open issues get that login as assignee, and the ruleset goes on. The labels and signatures can stay.
+
+*Why:* the owner, 2026-11-07, after GitHub suspended the second team's login: "im going to have it use my private account for now, while i wait for the appeal. we'll have to design around that."
 
 ---
 
@@ -79,7 +92,7 @@ The hub is the playbook repository's issue tracker. Process changes, decisions, 
 Rules:
 
 - **An owner's decision heard by one team reaches the hub in the same turn** when it changes anything the other team does or shares. Quote the words; don't paraphrase.
-- **Every hub issue names who acts** on an `Acts:` line (a team's login, or `both`).
+- **Every hub issue names who acts** on an `Acts:` line (a team's name, or `both`).
 - **Process changes are PRs to this repository, as always.** The other team reads each one through its hub watch and objects in a review before the Saturday window. An objection still open at the window holds the PR, and both coordinators take it to the owner.
 - **Issues, not GitHub Discussions.** Discussions can only be read through GitHub's GraphQL API, which Claude Code sessions can't call, so a watch would never see them.
 - **The hub is private** to the teams and the owner, so the teams can talk freely there, business included. Credentials never go there. A watch counts only items written by logins on the roster.
@@ -90,7 +103,7 @@ Rules:
 
 Each coordinator reads the hub on its own, so nothing depends on the other team remembering to tell it.
 
-- **Hourly**, a scheduled task wakes the coordinator, which runs [`kit/hub/digest.py`](../kit/hub/digest.py) over the hub repository (and, while it is still in use, any older playbook repository). The script prints what is new or changed since its last run: issues, PRs, comments and commits on `main`, from roster logins only, the other team's first. It keeps its place in a file of the team's own, and prints `NOTHING NEW` when that is true.
+- **Hourly**, a scheduled task wakes the coordinator, which runs [`kit/hub/digest.py`](../kit/hub/digest.py) over the hub repository (and, while it is still in use, any older playbook repository). The script prints what is new or changed since its last run: issues, PRs, comments and commits on `main`, from roster logins only. Items are sorted to the team named by their `team:` label or `Team:` line, or else to the login's team, and the other team's items are listed first. It keeps its place in a file of the team's own, and prints `NOTHING NEW` when that is true.
 - **The coordinator acts on what it prints:** answers a `question` addressed to its team, tells the affected lane or role, records a `decision` in its team's memory, and raises a `needs-owner` item with the owner once. It doesn't reply in the owner's chat about routine items.
 - **A team that adds a role or a routine** that the other team should mirror posts it on the hub as a `proposal`, with the prompt it uses.
 
