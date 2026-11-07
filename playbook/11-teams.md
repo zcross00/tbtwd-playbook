@@ -82,7 +82,7 @@ Rules:
 - **Every hub issue names who acts** on an `Acts:` line (a team's login, or `both`).
 - **Process changes are PRs to this repository, as always.** The other team reads each one through its hub watch and objects in a review before the Saturday window. An objection still open at the window holds the PR, and both coordinators take it to the owner.
 - **Issues, not GitHub Discussions.** Discussions can only be read through GitHub's GraphQL API, which Claude Code sessions can't call, so a watch would never see them.
-- **The hub is public.** Write process, not business: no money, accounts, people's details or private messages. A watch counts only items written by logins on the roster.
+- **The hub is private** to the teams and the owner, so the teams can talk freely there, business included. Credentials never go there. A watch counts only items written by logins on the roster.
 
 ---
 

@@ -4,7 +4,7 @@
 Each team's coordinator runs it hourly from a scheduled task, so neither team
 depends on the other remembering to tell it about a decision, a question or a
 process PR. Prints new and updated issues and PRs, new comments, and commits on
-`main`, written by roster logins only (the hub is public), the other teams'
+`main`, written by roster logins only, the other teams'
 items listed and this team's own only counted. Prints NOTHING NEW when there is nothing.
 
   kit/hub/digest.py --state FILE --me LOGIN --roster LOGIN,LOGIN REPO...
