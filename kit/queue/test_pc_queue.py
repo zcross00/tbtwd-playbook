@@ -186,6 +186,18 @@ class MainFix(unittest.TestCase):
         fake = Fake([run(1, "10:00", 5)], issues={5: (["main-fix"], "")})
         self.assertTrue(poll(fake, 1)[0])
 
+    def test_a_train_doesnt_wait_for_a_fix_it_carries(self):
+        fake = Fake([run(3, "10:20", 20)], issues={20: (["train"], "Train: #9 #6"), 9: (["main-fix"], ""), 6: ([], "")})
+        fake.labelled[9] = ["10:25"]
+        self.assertTrue(poll(fake, 3)[0])
+
+    def test_a_plain_run_waits_for_the_train_carrying_a_fix(self):
+        fake = Fake([run(1, "10:00", 5)], issues={20: (["train"], "Train: #9"), 9: (["main-fix"], "")})
+        fake.labelled[9] = ["10:25"]
+        go, why = poll(fake, 1)
+        self.assertFalse(go)
+        self.assertIn("waiting for #20", why)
+
     def test_key_keeps_its_three_argument_form(self):
         # Older runs call main's module through key(run, first, joined).
         r = {"id": 1}
