@@ -386,6 +386,13 @@ class Queue:
                 return number
         return None
 
+    def carrier(self, number):
+        """The open train that carries PR `number`, or the PR itself."""
+        for train, carried in self.open_trains().items():
+            if train != number and number in carried:
+                return train
+        return number
+
     def month(self):
         return time.strftime("%Y-%m-01T00:00:00Z", time.gmtime(self.polled))
 
@@ -506,7 +513,8 @@ class Queue:
             # #881): going frees a runner, and once its run is in progress it
             # sorts ahead anyway.
             starved = {pr["number"] for r in queued for pr in r.get("pull_requests", [])}
-            fixes = [(n, at) for n, at in self.main_fixes() if n not in mine_prs and n not in starved]
+            fixes = [(self.carrier(n), at) for n, at in self.main_fixes() if n not in starved]
+            fixes = [(n, at) for n, at in fixes if n not in mine_prs]
             # A label whose time can't be found counts as stale, so nothing
             # halts the PC without a limit.
             live = [n for n, at in fixes if at and self.polled - seconds(at) < MAIN_FIX_SECS]
