@@ -42,6 +42,7 @@ class Fake:
         self.ready, self.history, self.opened = ready or {}, history or {}, opened or {}
         self.closed, self.drafts, self.labelled = set(), set(), {}
         self.heads, self.forks, self.lagging = {}, set(), {}
+        self.green = set()
         # The hosted-full artifacts (None: unreadable) and each paid workflow's runs.
         self.artifacts, self.paid = None, {}
         self.calls = []
@@ -80,8 +81,12 @@ class Fake:
             return [{"number": n, "labels": [{"name": l} for l in labels], "body": body, "base": {"repo": here},
                      "head": {"ref": self.heads.get(n, f"b{n}"), "repo": None if n in self.forks else here}}
                     for n, (labels, body) in sorted(self.issues.items()) if n not in self.closed]
+        if path.startswith("commits/"):
+            n = int(path.split("/")[1][1:])
+            return {"check_runs": [{"name": "full", "status": "completed", "conclusion": "success"}] if n in self.green else []}
         if path.startswith("pulls/"):
-            return {"head": {"ref": f"b{int(path.split('/')[1])}"}}
+            n = int(path.split("/")[1])
+            return {"head": {"ref": f"b{n}", "sha": f"s{n}"}}
         number = int(path.split("/")[1])
         labels, body = self.issues.get(number, ([], ""))
         return {"labels": [{"name": n} for n in labels], "body": body, "created_at": t(self.opened[number]) if number in self.opened else ""}
@@ -155,6 +160,15 @@ class MainFix(unittest.TestCase):
         fake = Fake([run(1, "10:00", 5)], issues={9: (["main-fix"], "")},
                     jobs={3: [job("queue", "queued")]}, queued=[run(3, "10:26", 9)])
         fake.labelled[9] = ["10:25"]
+        go, why = poll(fake, 1)
+        self.assertTrue(go)
+        self.assertIn("first in line", why)
+
+    def test_a_fix_whose_head_passed_full_doesnt_pause_anything(self):
+        fake = Fake([run(1, "10:00", 5)], issues={9: (["main-fix"], "")})
+        fake.labelled[9] = ["10:25"]
+        self.assertFalse(poll(fake, 1)[0])
+        fake.green.add(9)
         go, why = poll(fake, 1)
         self.assertTrue(go)
         self.assertIn("first in line", why)
@@ -578,6 +592,46 @@ class Poll(unittest.TestCase):
         clock[0] = q.PRIORITY_TTL_SECS
         queue.poll()
         self.assertEqual(fake.calls.count("issues/5"), 3)
+
+
+class FullRunners(unittest.TestCase):
+    """Two full runners: the first two in line go, and no more than two hold the PC."""
+
+    def setUp(self):
+        self.was, q.FULL_RUNNERS = q.FULL_RUNNERS, 2
+
+    def tearDown(self):
+        q.FULL_RUNNERS = self.was
+
+    def test_second_in_line_goes_while_the_first_is_on_the_pc(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={1: ON_PC})
+        go, why = poll(fake, 2)
+        self.assertTrue(go)
+        self.assertIn("1 ahead on 2 full runners", why)
+
+    def test_third_in_line_waits_for_a_runner(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6), run(3, "10:10", 7)], jobs={1: ON_PC, 2: ON_PC})
+        go, why = poll(fake, 3)
+        self.assertFalse(go)
+        self.assertIn("2 ahead", why)
+
+    def test_one_ahead_and_one_behind_on_the_pc_fill_both_runners(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6), run(3, "10:10", 7)], jobs={1: WAITING, 3: ON_PC},
+                    issues={5: (["priority: A"], "")})
+        go, why = poll(fake, 2)
+        self.assertFalse(go)
+        self.assertIn("the PC is running PR #7", why)
+
+    def test_first_in_line_goes_beside_one_run_behind_on_the_pc(self):
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6)], jobs={2: ON_PC})
+        go, why = poll(fake, 1)
+        self.assertTrue(go)
+        self.assertIn("first in line, 1 behind", why)
+
+    def test_a_finished_run_ahead_frees_its_runner(self):
+        done = [job("queue", "completed", "success"), job("full", "completed", "success", labels=PC)]
+        fake = Fake([run(1, "10:00", 5), run(2, "10:05", 6), run(3, "10:10", 7)], jobs={1: done, 2: ON_PC})
+        self.assertTrue(poll(fake, 3)[0])
 
 
 class Overflow(unittest.TestCase):
