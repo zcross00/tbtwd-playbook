@@ -12,6 +12,13 @@ when there is nothing.
 
   kit/hub/digest.py --state FILE --team NAME --roster NAME=LOGIN,NAME=LOGIN REPO...
 
+--config FILE (default: config.json beside this script, when there is one) sets
+the team and roster instead, so a scheduled task's command never has to change
+when a team's login does: {"team": NAME, "roster": {NAME: LOGIN, ...},
+"notes": [LINE, ...]}. Its notes are printed under every digest that lists
+something. The older form --me LOGIN --roster LOGIN,LOGIN names each team by
+its login.
+
 FILE keeps the time of the last run per repository; it is the team's own.
 The first run looks back 24 hours. --dry-run prints without moving FILE on.
 Reads the GitHub API through `gh api`.
@@ -114,24 +121,41 @@ def render(repos_items, team, roster):
 
 def parse_roster(text):
     roster = {}
-    for pair in text.split(","):
-        if "=" in pair:
-            name, login = pair.split("=", 1)
-            roster[name.strip()] = login.strip()
+    for pair in (text or "").split(","):
+        pair = pair.strip()
+        if not pair:
+            continue
+        name, _, login = pair.partition("=")
+        roster[name.strip()] = (login or name).strip()
     return roster
+
+
+def settings(a):
+    cfg_path = a.config or os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+    cfg = {}
+    if os.path.exists(cfg_path):
+        with open(cfg_path) as f:
+            cfg = json.load(f)
+    team = cfg.get("team") or a.team or a.me
+    roster = dict(cfg.get("roster") or parse_roster(a.roster))
+    if not cfg.get("roster") and a.me and team == a.me:
+        roster.setdefault(a.me, a.me)
+    return team, roster, cfg.get("notes") or []
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--state", required=True)
-    ap.add_argument("--team", required=True)
-    ap.add_argument("--roster", required=True, help="NAME=LOGIN,... for every team, this one included; a shared login's own team first")
+    ap.add_argument("--team")
+    ap.add_argument("--me", help="older form: this team's login, used as its name")
+    ap.add_argument("--roster", help="NAME=LOGIN,... for every team, a shared login's own team first")
+    ap.add_argument("--config")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("repos", nargs="+")
     a = ap.parse_args(argv)
-    roster = parse_roster(a.roster)
-    if a.team not in roster:
-        ap.error(f"--team {a.team} is not in --roster")
+    team, roster, notes = settings(a)
+    if not team or team not in roster:
+        ap.error("no team, or the team is not in the roster")
     state = {}
     if os.path.exists(a.state):
         with open(a.state) as f:
@@ -140,7 +164,10 @@ def main(argv=None):
     default = (now - dt.timedelta(hours=24)).isoformat().replace("+00:00", "Z")
     stamp = now.isoformat().replace("+00:00", "Z")
     got = [(r, collect(r, state.get(r, default))) for r in a.repos]
-    print(render(got, a.team, roster))
+    out = render(got, team, roster)
+    if notes and not out.startswith("NOTHING NEW"):
+        out += "\n" + "\n".join(f"NOTE: {n}" for n in notes)
+    print(out)
     if not a.dry_run:
         for r in a.repos:
             state[r] = stamp

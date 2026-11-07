@@ -77,6 +77,27 @@ class DigestTest(unittest.TestCase):
 
     def test_roster(self):
         self.assertEqual(digest.parse_roster("a=x, b=x"), {"a": "x", "b": "x"})
+        self.assertEqual(digest.parse_roster("login-b"), {"login-b": "login-b"})
+
+    def args(self, *argv):
+        import argparse
+        a = argparse.Namespace(config=None, team=None, me=None, roster=None)
+        for k, v in zip(argv[::2], argv[1::2]):
+            setattr(a, k, v)
+        return a
+
+    def test_older_form(self):
+        a = self.args("config", "/nonexistent.json", "me", "login-a", "roster", "login-b")
+        self.assertEqual(digest.settings(a), ("login-a", {"login-b": "login-b", "login-a": "login-a"}, []))
+
+    def test_config_wins(self):
+        import json
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"team": "a", "roster": SHARED, "notes": ["n1"]}, f)
+        a = self.args("config", f.name, "me", "login-a", "roster", "login-b")
+        self.assertEqual(digest.settings(a), ("a", SHARED, ["n1"]))
+        os.unlink(f.name)
 
 
 if __name__ == "__main__":
